@@ -116,7 +116,7 @@ export default function PaymentLinks() {
         ) : paymentLinks && paymentLinks.length > 0 ? (
           paymentLinks.map((link, idx) => {
             const bgImage = AVAILABLE_CARDS_BG[idx % AVAILABLE_CARDS_BG.length];
-            const cardName = `${link.alias}.privatepay.base`;
+            const cardName = `${link.alias}.privatepay.bot`;
 
             return (
               <motion.div
@@ -178,7 +178,7 @@ export default function PaymentLinks() {
                 </div>
 
                 <div className="absolute right-5 bottom-6 flex items-center justify-between">
-                  <img src={BASE_LOGO} alt="Base" className="h-6 w-auto object-contain" />
+                  <img src={BASE_LOGO} alt="BOT Chain" className="h-6 w-auto object-contain" />
                 </div>
 
               </motion.div>

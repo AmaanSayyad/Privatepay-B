@@ -241,7 +241,7 @@ export default function AliasDetail() {
           </div>
 
           <div className="absolute right-5 bottom-6 flex items-center justify-between">
-            <img src={BASE_LOGO} alt="Base" className="h-6 w-auto object-contain" />
+            <img src={BASE_LOGO} alt="BOT Chain" className="h-6 w-auto object-contain" />
           </div>
         </div>
       </motion.div>

@@ -136,7 +136,7 @@ export default function PaymentLinksDashboard({ user }) {
               const bgImage =
                 AVAILABLE_CARDS_BG[idx % AVAILABLE_CARDS_BG.length];
               const colorScheme = CARDS_SCHEME[idx % CARDS_SCHEME.length];
-              const cardName = `${link.alias}.privatepay.base`;
+              const cardName = `${link.alias}.privatepay.bot`;
               const paymentPageUrl = `${window.location.origin}/payment/${link.alias}`;
 
               return (
@@ -194,7 +194,7 @@ export default function PaymentLinksDashboard({ user }) {
                             {balances.eth_balance.toFixed(4)} BOT
                           </span>
                           <span className="text-[10px] opacity-80 flex items-center gap-1">
-                            {balances.usdc_balance.toFixed(2)} USDC
+                            {balances.usdc_balance.toFixed(2)} USDT
                           </span>
                         </div>
                       </div>
@@ -215,7 +215,7 @@ export default function PaymentLinksDashboard({ user }) {
                   </div>
 
                   <div className="absolute right-5 bottom-6 flex items-center justify-between">
-                    <img src={BASE_LOGO} alt="Base" className="h-6 w-auto object-contain" />
+                    <img src={BASE_LOGO} alt="BOT Chain" className="h-6 w-auto object-contain" />
                   </div>
 
                 </motion.div>

@@ -1,6 +1,6 @@
 /**
- * PWA Utilities (Base)
- * Push notifications and PWA helpers for Private-Pay on Base.
+ * PWA Utilities (BOT Chain)
+ * Push notifications and PWA helpers for Private-Pay on BOT Chain.
  */
 
 export async function requestNotificationPermission() {
@@ -32,7 +32,7 @@ export function showNotification(title, options = {}) {
   return n;
 }
 
-/** Notify user when BOT/USDT payment is received (Base) */
+/** Notify user when BOT/USDT payment is received (BOT Chain) */
 
 export function notifyPaymentReceived(amount, fromAddress) {
   const shortFrom = fromAddress ? `${fromAddress.slice(0, 6)}...${fromAddress.slice(-4)}` : "sender";

@@ -139,7 +139,7 @@ export default function Payment() {
             }}
             className="cursor-pointer hover:underline"
           >
-            Payment sent to {alias}.privatepay.base! TX: {shortHash} (click to view)
+            Payment sent to {alias}.privatepay.bot! TX: {shortHash} (click to view)
           </div>
         ),
         { duration: 8000 }
@@ -155,7 +155,7 @@ export default function Payment() {
             logo: currency === 'USDT' ? USDT_LOGO : BOTCHAIN_LOGO,
           },
         },
-        destinationAddress: `${alias}.privatepay.base`,
+        destinationAddress: `${alias}.privatepay.bot`,
         txHashes: [tx.hash],
       };
       setSuccessData(successDataObj);
@@ -190,7 +190,7 @@ export default function Payment() {
         <div className="w-28 h-10 flex items-center justify-center">
           <img
             src={BASE_LOGO}
-            alt="Base"
+            alt="BOT Chain"
             className="h-10 w-auto object-contain rounded-full"
           />
         </div>
@@ -218,7 +218,7 @@ export default function Payment() {
               </h1>
 
               <p className="text-sm text-gray-500 mb-6 font-mono">
-                {alias}.privatepay.base
+                {alias}.privatepay.bot
                 {paymentLinkData?.username && paymentLinkData.username !== alias && (
                   <span className="text-xs text-gray-400 ml-2">
                     ({paymentLinkData.username})

@@ -237,7 +237,7 @@ function StepOne({ setStep, setOpen }) {
           variant="bordered"
           isInvalid={!isUsernameAvailable && username}
         />
-        <p className="absolute right-4 text-neutral-400">.privatepay.base</p>
+        <p className="absolute right-4 text-neutral-400">.privatepay.bot</p>
       </div>
       {(isUsernameAvailable === false && username) &&
         <div className="text-red-500 mt-1">
@@ -320,7 +320,7 @@ function StepTwo({ setOpen }) {
           {isLoading ? (
             <Skeleton className="w-24 h-8 rounded-md" />
           ) : (
-            <p className="text-xl">{user?.username || 'user'}.privatepay.base</p>
+            <p className="text-xl">{user?.username || 'user'}.privatepay.bot</p>
           )}
         </div>
         <div className="bg-primary-50 flex-1 flex flex-col justify-end">
@@ -340,7 +340,7 @@ function StepTwo({ setOpen }) {
         onClick={async () => {
           await navigator.share({
             title: "Link",
-            text: `${user?.username || 'user'}.privatepay.base`,
+            text: `${user?.username || 'user'}.privatepay.bot`,
           });
         }}
         className="h-16 rounded-full text-white flex items-center justify-center w-full mt-4 bg-primary-600"

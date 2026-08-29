@@ -193,7 +193,7 @@ function StepOne({
           variant="bordered"
         />
         <p className="absolute right-4 text-neutral-400">
-          .privatepay.base
+          .privatepay.bot
         </p>
       </div>
       <Button
@@ -242,7 +242,7 @@ function StepTwo({
       if (navigator.share) {
         await navigator.share({
           title: "Payment Link",
-          text: `Pay me at ${alias}.privatepay.base`,
+          text: `Pay me at ${alias}.privatepay.bot`,
           url: paymentPageUrl,
         });
         toast.success("Link shared!");
@@ -285,7 +285,7 @@ function StepTwo({
                   className={`${nextColorScheme === 2 ? "text-black " : "text-white"
                     }`}
                 >
-                  {alias}.privatepay.base
+                  {alias}.privatepay.bot
                 </p>
               </h1>
               <button

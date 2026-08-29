@@ -18,7 +18,7 @@ function Transactions() {
         <div className="bg-white size-6 rounded-xl p-1">
           <img
             src={BASE_LOGO}
-            alt="base-logo"
+            alt="BOT Chain"
             className="w-full h-full object-contain mix-blend-multiply"
           />
         </div>
@@ -42,7 +42,7 @@ function Transactions() {
           <TxItem
             tokenImg={BOTCHAIN_LOGO}
             chainImg={BASE_LOGO}
-            title={"alice.privatepay.base - Receive"}
+            title={"alice.privatepay.bot - Receive"}
             isNounsies
             addressNounsies={"0x02919065a8Ef7A7826b3D9f3DEFef2FA0a4d1f34"}
             subtitle={`from ${shortenAddress(
@@ -55,7 +55,7 @@ function Transactions() {
           <TxItem
             tokenImg={USDT_LOGO}
             chainImg={BASE_LOGO}
-            title={"bob.privatepay.base - Receive"}
+            title={"bob.privatepay.bot - Receive"}
             isNounsies
             addressNounsies={"0x02919065a8Ef7A782Bb3D9f3DEFef2F230a4d1f34"}
             subtitle={`from ${shortenAddress(

@@ -32,7 +32,7 @@ export default function UserProvider({ children }) {
     }
     setAssetsLoading(true);
     try {
-      console.log(`Fetching assets for ${userData.user.username}.privatepay.base`, {
+      console.log(`Fetching assets for ${userData.user.username}.privatepay.bot`, {
         userData,
       });
 
@@ -62,7 +62,7 @@ export default function UserProvider({ children }) {
     }
     setAssetsRefetching(true);
     try {
-      console.log(`Fetching assets for ${userData.user.username}.privatepay.base`, {
+      console.log(`Fetching assets for ${userData.user.username}.privatepay.bot`, {
         userData,
       });
 

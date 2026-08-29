@@ -100,10 +100,10 @@ export default function Transactions() {
                   value = `-${Math.abs(tx.amount).toFixed(decimals)} ${currencyLabel}`;
                 } else if (isSent) {
                   title = "Sent Payment";
-                  subtitle = `to ${tx.recipient_username}.privatepay.base`;
+                  subtitle = `to ${tx.recipient_username}.privatepay.bot`;
                   value = `-${Math.abs(tx.amount).toFixed(decimals)} ${currencyLabel}`;
                 } else {
-                  title = `${username}.privatepay.base`;
+                  title = `${username}.privatepay.bot`;
                   subtitle = `Private Sender`;
                   value = `+${Math.abs(tx.amount).toFixed(decimals)} ${currencyLabel}`;
                 }

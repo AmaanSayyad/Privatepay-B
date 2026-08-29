@@ -9,7 +9,7 @@ export const APP_LOGO = "/assets/private-pay-logo.svg"; // Private-Pay app logo
 export const BASE_LOGO = "/botchain.png";
 export const BOTCHAIN_LOGO = "/botchain.png";
 export const USDT_LOGO = "/usdt.png";
-export const PAYMENT_LINK_SUFFIX = ".privatepay.base";
+export const PAYMENT_LINK_SUFFIX = ".privatepay.bot";
 
 // Treasury address — from .env
 const _sharedTreasury = typeof import.meta !== "undefined" && import.meta.env?.VITE_SHARED_TREASURY_ADDRESS?.trim();

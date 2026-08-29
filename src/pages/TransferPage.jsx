@@ -37,7 +37,7 @@ export default function TransferPage() {
           className="flex items-center gap-3 p-4 rounded-xl bg-primary/10 hover:bg-primary/20 transition-colors"
         >
           <Shield className="size-5 text-primary" />
-          <span className="font-medium">Base — Connect & Send</span>
+          <span className="font-medium">BOT Chain — Connect & Send</span>
         </Link>
       </div>
     </div>

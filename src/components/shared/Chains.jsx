@@ -3,7 +3,7 @@ import { DISPLAY_CHAINS } from "../../config";
 export default function Chains() {
   return (
     <div className="flex flex-col gap-4">
-      <p className="text-[#A1A1A3] text-sm mt-3">on Base</p>
+      <p className="text-[#A1A1A3] text-sm mt-3">on BOT Chain</p>
 
       <div className="flex gap-1 items-center justify-center">
         {DISPLAY_CHAINS.map((chain) => {

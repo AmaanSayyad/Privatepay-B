@@ -1,5 +1,5 @@
 /**
- * Send & Withdraw page - Updated for Base (EVM).
+ * Send & Withdraw page - BOT Chain (EVM).
  * - Send: Transfer BOT/USDT from your wallet to any address (e.g. treasury).
  * - Withdraw: Withdraw your credited balance from the treasury to your wallet.
  */
@@ -101,7 +101,7 @@ function SendTab() {
 
     // Alıcı kullanıcı adı / alias'ını çöz
     const rawRecipient = recipient.trim();
-    const alias = rawRecipient.replace(/\.privatepay\.base$/i, '').replace(/\.privatepay$/i, '').toLowerCase().trim();
+    const alias = rawRecipient.replace(/\.privatepay\.(bot|base)$/i, '').replace(/\.privatepay$/i, '').toLowerCase().trim();
 
     let recipientUsername = null;    // Supabase'de balance yazılacak username
     let recipientWalletAddress = null; // Supabase users/payment_links kayıtlı cüzdan (bilgi amaçlı)
@@ -237,7 +237,7 @@ function SendTab() {
       <Card className="w-full bg-white border border-gray-200 shadow-md rounded-3xl">
         <CardBody className="p-8 flex flex-col items-center gap-6">
           <div className="w-16 h-16 rounded-2xl bg-primary-50 flex items-center justify-center p-3">
-            <img src={BASE_LOGO} alt="Base" className="w-full h-full object-contain" />
+            <img src={BASE_LOGO} alt="BOT Chain" className="w-full h-full object-contain" />
           </div>
           <div className="text-center space-y-2">
             <h3 className="text-xl font-bold text-gray-900">Connect wallet to send</h3>
@@ -256,10 +256,10 @@ function SendTab() {
       <CardBody className="p-6">
         <div className="flex items-center gap-3 mb-4">
           <div className="w-10 h-10 rounded-2xl bg-primary-50 flex items-center justify-center p-2">
-            <img src={BASE_LOGO} alt="Base" className="w-full h-full object-contain" />
+            <img src={BASE_LOGO} alt="BOT Chain" className="w-full h-full object-contain" />
           </div>
           <div>
-            <h3 className="text-lg font-bold text-gray-900">Private Transfer (Base)</h3>
+            <h3 className="text-lg font-bold text-gray-900">Private Transfer (BOT Chain)</h3>
             <p className="text-xs text-gray-500">Recipient wallet stays hidden — routed via Treasury</p>
           </div>
         </div>
@@ -288,7 +288,7 @@ function SendTab() {
               type="text"
               value={recipient}
               onChange={(e) => setRecipient(e.target.value)}
-              placeholder="alice or alice.privatepay.base or 0x..."
+              placeholder="alice or alice.privatepay.bot or 0x..."
               className="w-full px-4 py-2.5 border border-gray-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent font-mono text-sm"
             />
           </div>
@@ -407,7 +407,7 @@ function WithdrawTab() {
     // Alias çözümleme: 0x ile başlamıyorsa alias/username olarak kabul et
     if (!finalDestination.startsWith('0x') && finalDestination.length > 0) {
       try {
-        const alias = finalDestination.replace(/\.privatepay\.base$/i, '').replace(/\.privatepay$/i, '').toLowerCase().trim();
+        const alias = finalDestination.replace(/\.privatepay\.(bot|base)$/i, '').replace(/\.privatepay$/i, '').toLowerCase().trim();
         // 1. Önce users tablosunda ara
         let user = await getUserByUsername(alias);
         if (user && user.wallet_address) {
@@ -520,7 +520,7 @@ function WithdrawTab() {
       <Card className="w-full bg-white border border-gray-200 shadow-md rounded-3xl">
         <CardBody className="p-8 flex flex-col items-center gap-6">
           <div className="w-16 h-16 rounded-2xl bg-primary-50 flex items-center justify-center p-3">
-            <img src={BASE_LOGO} alt="Base" className="w-full h-full object-contain" />
+            <img src={BASE_LOGO} alt="BOT Chain" className="w-full h-full object-contain" />
           </div>
           <div className="text-center space-y-2">
             <h3 className="text-xl font-bold text-gray-900">Connect wallet to withdraw</h3>
@@ -539,7 +539,7 @@ function WithdrawTab() {
       <CardBody className="p-6">
         <div className="flex items-center gap-3 mb-4">
           <div className="w-10 h-10 rounded-2xl bg-primary-50 flex items-center justify-center p-2">
-            <img src={BASE_LOGO} alt="Base" className="w-full h-full object-contain" />
+            <img src={BASE_LOGO} alt="BOT Chain" className="w-full h-full object-contain" />
           </div>
           <div>
             <h3 className="text-lg font-bold text-gray-900">Withdraw from treasury</h3>
@@ -592,12 +592,12 @@ function WithdrawTab() {
             </div>
           </div>
           <div>
-            <label className="text-sm font-medium text-gray-700 mb-1.5 block">Destination (your Base wallet or .privatepay.base)</label>
+            <label className="text-sm font-medium text-gray-700 mb-1.5 block">Destination (your BOT Chain wallet or .privatepay.bot)</label>
             <input
               type="text"
               value={destination}
               onChange={(e) => setDestination(e.target.value)}
-              placeholder="0x... or alice.privatepay.base"
+              placeholder="0x... or alice.privatepay.bot"
               className="w-full px-4 py-2.5 border border-gray-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent font-mono text-sm"
             />
           </div>

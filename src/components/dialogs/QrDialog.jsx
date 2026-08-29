@@ -4,7 +4,7 @@ import toast from "react-hot-toast";
 import { QRCode } from "react-qrcode-logo";
 import { useRef, useState, useEffect } from "react";
 import { useAppWallet } from "../../hooks/useAppWallet.js";
-import { APP_LOGO, BASE_LOGO } from "../../config.js";
+import { APP_LOGO, BASE_LOGO, BOT_CHAIN_NAME } from "../../config.js";
 
 export default function QrDialog({ open, setOpen, qrUrl }) {
   const { account } = useAppWallet();
@@ -34,7 +34,7 @@ export default function QrDialog({ open, setOpen, qrUrl }) {
       if (navigator.share) {
         await navigator.share({
           title: "Payment Link",
-          text: `${username}.privatepay.base`,
+          text: `${username}.privatepay.bot`,
           url: paymentPageUrl,
         });
       } else {
@@ -111,8 +111,8 @@ export default function QrDialog({ open, setOpen, qrUrl }) {
         </div>
 
         <div className="flex items-center justify-center gap-2">
-          <img src={BASE_LOGO} alt="Base" className="h-5 w-5 object-contain" />
-          <p className="font-athletics text-sm text-gray-500">Supported network: Base (Sepolia)</p>
+          <img src={BASE_LOGO} alt="BOT Chain" className="h-5 w-5 object-contain" />
+          <p className="font-athletics text-sm text-gray-500">Supported network: {BOT_CHAIN_NAME}</p>
         </div>
 
         <div className="flex w-full items-center gap-4 mt-2">

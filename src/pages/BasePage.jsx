@@ -1,5 +1,5 @@
 /**
- * Base hub — EVM-only.
+ * BOT Chain hub — EVM-only.
  * Send BOT/USDT on BOT Chain via the Send page.
  */
 
@@ -24,7 +24,7 @@ export default function BasePage() {
           className="flex flex-col items-center"
         >
           <h1 className="font-bold text-4xl md:text-5xl text-gray-900 tracking-tight">
-            Base
+            BOT Chain
           </h1>
           <div className="flex items-center gap-2 mt-1">
             <Chip size="sm" variant="flat" color="secondary" className="font-bold text-[10px]">
@@ -51,7 +51,7 @@ export default function BasePage() {
               <div className="text-center space-y-2">
                 <h3 className="font-bold text-2xl text-gray-900">Connect Wallet</h3>
                 <p className="text-gray-500 text-sm max-w-[280px] leading-relaxed mx-auto">
-                  Connect your wallet to send BOT/USDT and use Private-Pay on Base.
+                  Connect your wallet to send BOT/USDT and use Private-Pay on BOT Chain.
                 </p>
               </div>
               <button

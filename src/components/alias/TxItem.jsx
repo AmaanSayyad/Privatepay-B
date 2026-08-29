@@ -21,7 +21,7 @@ export default function TxItem({
           <div className="size-12 rounded-full overflow-hidden bg-primary-50 flex items-center justify-center p-1.5">
             <img
               src={tokenImg}
-              alt="Base"
+              alt="BOT Chain"
               className="object-contain w-full h-full"
             />
           </div>

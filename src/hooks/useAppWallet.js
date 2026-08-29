@@ -1,5 +1,5 @@
 /**
- * App wallet hook — Updated for Base (EVM) via Wagmi and ConnectKit (Family Adapter).
+ * App wallet hook — BOT Chain (EVM) via Wagmi and ConnectKit (Family Adapter).
  * Exposes { account, isConnected, connect, disconnect, provider, signer }
  */
 import { BrowserProvider, JsonRpcSigner } from "ethers";

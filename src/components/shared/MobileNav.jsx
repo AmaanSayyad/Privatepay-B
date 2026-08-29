@@ -27,7 +27,7 @@ export function MobileNav() {
         // },
         {
             id: 'base',
-            label: 'Base',
+            label: 'BOT Chain',
             icon: <ArrowLeftRight className="w-5 h-5" />,
             path: '/base',
         },

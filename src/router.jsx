@@ -69,7 +69,7 @@ export const router = createBrowserRouter([
         loader: ({ params, request }) => {
           const url = new URL(request.url);
           const id = url.searchParams.get("id");
-          return { fullAlias: `${params.alias}.privatepay.base`, aliasId: id };
+          return { fullAlias: `${params.alias}.privatepay.bot`, aliasId: id };
         },
         element: <LazyRoute Component={AliasDetailPage} />,
         children: [{ path: "transfer", element: <LazyRoute Component={TransferPage} /> }],
@@ -81,7 +81,7 @@ export const router = createBrowserRouter([
       { path: "/private-details", element: <LazyRoute Component={PrivateBalancePage} /> },
       { path: "/send", element: <LazyRoute Component={SendPage} routeName="Send" /> },
       { path: "/transfer", element: <LazyRoute Component={TransferPage} /> },
-      { path: "/base", element: <LazyRoute Component={BasePage} routeName="Base" /> },
+      { path: "/base", element: <LazyRoute Component={BasePage} routeName="BOT Chain" /> },
     ],
   },
   {
