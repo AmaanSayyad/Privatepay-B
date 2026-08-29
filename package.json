@@ -18,7 +18,8 @@
     "test": "vitest --run",
     "test:watch": "vitest",
     "contract:compile": "hardhat compile",
-    "contract:deploy": "hardhat run scripts/deploy-treasury.cjs --network baseSepolia"
+    "contract:deploy": "hardhat run scripts/deploy-treasury.cjs --network botchain",
+    "contract:deploy:testnet": "hardhat run scripts/deploy-treasury.cjs --network botchainTestnet"
   },
   "dependencies": {
     "@arcium-hq/client": "^0.5.1",
