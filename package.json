@@ -21,7 +21,8 @@
     "contract:deploy": "node scripts/deploy-treasury.cjs",
     "db:check": "node scripts/check-db.mjs",
     "contract:e2e": "node scripts/e2e-treasury.mjs",
-    "start": "node server.mjs"
+    "start": "node server.mjs",
+    "contract:e2e:usdt": "node scripts/e2e-usdt.mjs"
   },
   "dependencies": {
     "@arcium-hq/client": "^0.5.1",

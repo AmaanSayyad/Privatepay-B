@@ -124,10 +124,6 @@ function StepOne({ setStep, setOpen }) {
 
     setLoading(true);
 
-    // Base-only build: the Sapphire stealth-signer path is disabled. Declared
-    // here (not inside the try) because the catch block below reads it too.
-    const sapphireTestnet = null;
-
     try {
       toast.loading(
         "Preparing meta address, please sign the transaction...",
@@ -156,8 +152,8 @@ function StepOne({ setStep, setOpen }) {
         throw new Error("Auth signer not found in localStorage");
       }
 
-      // Base-only: register username via backend or local state
-      if (!sapphireTestnet) {
+      // Register the username via the backend, falling back to local state.
+      {
         toast.dismiss("loading-meta-address");
         try {
           await privatepayAPI.post("/user/update-user", {
@@ -176,121 +172,6 @@ function StepOne({ setStep, setOpen }) {
         return;
       }
 
-      const sapphireProvider = new ethers.JsonRpcProvider(sapphireTestnet.rpcUrls[0]);
-      const paymasterPK = import.meta.env.VITE_PAYMASTER_PK;
-
-      // Validate paymaster private key
-      if (!paymasterPK || paymasterPK === "[REDACTED]" || paymasterPK.trim() === "" || paymasterPK.includes("REDACTED")) {
-        console.warn("Paymaster PK not found, skipping on-chain registration fallback.");
-      }
-
-
-      let paymasterWallet;
-      try {
-        paymasterWallet = new ethers.Wallet(paymasterPK, sapphireProvider);
-        // Validate the wallet was created successfully
-        if (!paymasterWallet.address) {
-          throw new Error("Failed to create wallet from private key");
-        }
-      } catch (keyError) {
-        const errorMessage = keyError.message?.includes("invalid private key")
-          ? "Invalid paymaster private key format. Please check VITE_PAYMASTER_PK environment variable."
-          : `Failed to create paymaster wallet: ${keyError.message}`;
-        toast.error(errorMessage);
-        throw new Error(errorMessage);
-      }
-
-      // Check paymaster balance before attempting transaction
-      toast.loading("Checking paymaster balance...", {
-        id: 'loading-meta-address',
-      });
-
-      const paymasterBalance = await sapphireProvider.getBalance(paymasterWallet.address);
-      const minBalance = ethers.parseEther("0.01"); // Minimum 0.01 ROSE needed
-
-      if (paymasterBalance < minBalance) {
-        const balanceFormatted = ethers.formatEther(paymasterBalance);
-        const errorMsg = `Paymaster wallet has insufficient balance (${balanceFormatted} ROSE). Please fund the wallet at: ${paymasterWallet.address}`;
-        toast.error(
-          (t) => (
-            <div className="flex flex-col gap-2">
-              <p className="font-semibold">Insufficient Paymaster Balance</p>
-              <p className="text-sm">Balance: {balanceFormatted} ROSE</p>
-              <p className="text-sm">Required: 0.01 ROSE minimum</p>
-              <p className="text-xs mt-2">Fund at: <span className="font-mono">{paymasterWallet.address}</span></p>
-              <p className="text-xs">
-                <a
-                  href={`https://faucet.sapphire.oasis.dev/`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-blue-500 underline"
-                  onClick={() => toast.dismiss(t.id)}
-                >
-                  Get testnet tokens from faucet
-                </a>
-              </p>
-            </div>
-          ),
-          { duration: 10000 }
-        );
-        throw new Error(errorMsg);
-      }
-
-      const contract = new ethers.Contract(
-        sapphireTestnet.stealthSignerContract.address,
-        sapphireTestnet.stealthSignerContract.abi.abi,
-        paymasterWallet
-      )
-      toast.loading(
-        "Cooking your meta address and ENS username, please wait...",
-        {
-          id: 'loading-meta-address',
-        }
-      );
-
-      // Populate transaction
-      const tx = await contract.register(authSigner);
-      console.log("Populated Transaction:", tx);
-
-      await tx.wait();
-
-      console.log("Transaction Confirmed:", tx);
-
-      // Get the user meta address
-      const metaAddress = await contract.getMetaAddress.staticCall(authSigner, 1);
-      const metaAddressInfo = {
-        metaAddress: metaAddress[0],
-        spendPublicKey: metaAddress[1],
-        viewingPublicKey: metaAddress[2],
-      }
-
-      console.log("Meta Address Info:", metaAddressInfo);
-
-      try {
-        await privatepayAPI.post("/user/update-user", {
-          username: username.toLowerCase(),
-          metaAddressInfo: metaAddressInfo
-        });
-
-        // Invalidate SWR cache to refresh user data
-        await mutate("/auth/me");
-
-        toast.success("Meta address and ENS username successfully created");
-      } catch (error) {
-        // If backend is not available, still allow local flow
-        if (error.code === 'ERR_NETWORK' || error.message?.includes('CONNECTION_REFUSED')) {
-          console.warn("[GetStartedDialog] Backend not available, skipping user update");
-          toast.success("Meta address created (local mode - backend unavailable)");
-          // Still invalidate cache to update local state
-          await mutate("/auth/me");
-        } else {
-          throw error;
-        }
-      }
-
-      // Clear skip flag since user successfully created username
-      localStorage.removeItem("username_setup_skipped");
-      setStep("two");
     } catch (e) {
       console.error('Error creating username', e)
 
@@ -306,58 +187,7 @@ function StepOne({ setStep, setOpen }) {
         (e?.error?.message?.includes("insufficient balance"));
 
       if (isInsufficientBalance) {
-        // Get paymaster wallet address for error message
-        try {
-          const paymasterPK = import.meta.env.VITE_PAYMASTER_PK;
-          if (paymasterPK && sapphireTestnet) {
-            const tempProvider = new ethers.JsonRpcProvider(sapphireTestnet.rpcUrls[0]);
-            const tempWallet = new ethers.Wallet(paymasterPK, tempProvider);
-            const balance = await tempProvider.getBalance(tempWallet.address);
-            const balanceFormatted = ethers.formatEther(balance);
-
-            errorMessage = `Paymaster wallet has insufficient balance (${balanceFormatted} ROSE). Please fund the wallet.`;
-            showDetailedError = true;
-
-            toast.error(
-              (t) => (
-                <div className="flex flex-col gap-2 max-w-md">
-                  <p className="font-semibold text-red-600">⚠️ Insufficient Paymaster Balance</p>
-                  <p className="text-sm">Current Balance: <span className="font-mono">{balanceFormatted} ROSE</span></p>
-                  <p className="text-sm">Required: <span className="font-mono">0.01 ROSE</span> minimum</p>
-                  <div className="mt-2 p-2 bg-gray-100 rounded text-xs">
-                    <p className="font-semibold mb-1">Paymaster Address:</p>
-                    <p className="font-mono break-all">{tempWallet.address}</p>
-                  </div>
-                  <div className="mt-2">
-                    <a
-                      href="https://faucet.sapphire.oasis.dev/"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-blue-600 underline text-sm font-semibold"
-                      onClick={() => toast.dismiss(t.id)}
-                    >
-                      → Get testnet tokens from faucet
-                    </a>
-                  </div>
-                  <p className="text-xs text-gray-500 mt-2">
-                    Copy the address above and request tokens from the faucet, then try again.
-                  </p>
-                </div>
-              ),
-              {
-                id: 'loading-meta-address',
-                duration: 15000
-              }
-            );
-          } else {
-            errorMessage = "Paymaster wallet has insufficient balance. Please fund the paymaster wallet with ROSE tokens.";
-          }
-        } catch (balanceError) {
-          errorMessage = "Paymaster wallet has insufficient balance to pay gas fees. Please fund the wallet with ROSE tokens.";
-        }
-      } else if (e?.message?.includes("Paymaster wallet has insufficient balance")) {
-        // Already handled above with detailed toast, don't show again
-        return; // Exit early, error already shown
+        errorMessage = 'Insufficient balance to cover gas fees.';
       } else if (e?.message) {
         errorMessage = e.message;
       }
