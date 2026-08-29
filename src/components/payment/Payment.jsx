@@ -5,7 +5,7 @@ import { useLoaderData, useParams } from "react-router-dom";
 import { useAppWallet } from "../../hooks/useAppWallet.js";
 import { getPaymentLinkByAlias, getUserByUsername, recordPayment } from "../../lib/supabase.js";
 import { ethers } from "ethers";
-import { BASE_LOGO, BOTCHAIN_LOGO, USDT_LOGO, USDC_ADDRESS, baseSepolia, BASE_TREASURY_ADDRESS } from "../../config.js";
+import { BASE_LOGO, BOTCHAIN_LOGO, USDT_LOGO, USDC_ADDRESS, BOT_CHAIN_NAME, baseSepolia, BASE_TREASURY_ADDRESS } from "../../config.js";
 
 const USDC_ABI = [
   "function transfer(address to, uint256 amount) public returns (bool)",
@@ -148,7 +148,7 @@ export default function Payment() {
       const successDataObj = {
         type: "PRIVATE_TRANSFER",
         amount: parseFloat(amount),
-        chain: { name: "Base Sepolia", id: "base-sepolia" },
+        chain: { name: BOT_CHAIN_NAME, id: "botchain" },
         token: {
           nativeToken: {
             symbol: currency,

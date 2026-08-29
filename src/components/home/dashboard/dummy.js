@@ -1,4 +1,4 @@
-// Dummy asset data for fallback/development — Base Sepolia only (chainId 84532)
+// Dummy asset data for fallback/development — BOT Chain only
 import { BASE_LOGO } from "../../../config.js";
 
 const BASE_CHAIN_ID = 84532;

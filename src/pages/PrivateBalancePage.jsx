@@ -22,7 +22,7 @@ function Transactions() {
             className="w-full h-full object-contain mix-blend-multiply"
           />
         </div>
-        Transactions on Base Sepolia
+        Transactions on BOT Chain
       </div>
       <div
         className={

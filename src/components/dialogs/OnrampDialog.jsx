@@ -60,12 +60,12 @@ export default function OnRampDialog({
           <p className="text-gray-700 font-medium">Get BOT on BOT Chain</p>
           <p className="text-sm text-gray-500">Use the faucet to receive testnet BOT for your wallet.</p>
           <a
-            href="https://sepolia-faucet.pk910.de/"
+            href="https://scan.bohr.life"
             target="_blank"
             rel="noopener noreferrer"
             className="text-primary font-semibold underline"
           >
-            Base Sepolia Faucet →
+            BOT Chain Faucet →
           </a>
           {targetWallet && (
             <p className="text-xs text-gray-400 font-mono break-all">Wallet: {targetWallet}</p>

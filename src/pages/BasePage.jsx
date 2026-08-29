@@ -1,6 +1,6 @@
 /**
  * Base hub — EVM-only.
- * Send BOT/USDT on Base Sepolia via the Send page.
+ * Send BOT/USDT on BOT Chain via the Send page.
  */
 
 import React from "react";
@@ -9,7 +9,7 @@ import { motion } from "framer-motion";
 import { Card, CardBody, Chip } from "@nextui-org/react";
 import { Send, ExternalLink, CheckCircle } from "lucide-react";
 import { useAppWallet } from "../hooks/useAppWallet.js";
-import { BASE_LOGO, baseSepolia } from "../config.js";
+import { BASE_LOGO, BOT_CHAIN_NAME, baseSepolia } from "../config.js";
 
 export default function BasePage() {
   const { isConnected, connect } = useAppWallet();
@@ -46,7 +46,7 @@ export default function BasePage() {
           <Card className="bg-white border border-gray-200 shadow-lg rounded-3xl">
             <CardBody className="flex flex-col items-center justify-center py-16 gap-8">
               <div className="w-20 h-20 rounded-3xl bg-primary-50 flex items-center justify-center p-4">
-                <img src={BASE_LOGO} alt="Base" className="w-full h-full object-contain" />
+                <img src={BASE_LOGO} alt="BOT Chain" className="w-full h-full object-contain" />
               </div>
               <div className="text-center space-y-2">
                 <h3 className="font-bold text-2xl text-gray-900">Connect Wallet</h3>
@@ -71,11 +71,11 @@ export default function BasePage() {
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-2xl bg-primary-50 flex items-center justify-center p-2">
-                    <img src={BASE_LOGO} alt="Base" className="w-full h-full object-contain" />
+                    <img src={BASE_LOGO} alt="BOT Chain" className="w-full h-full object-contain" />
                   </div>
                   <div>
-                    <h3 className="font-bold text-lg text-gray-900">Base Sepolia</h3>
-                    <p className="text-xs text-gray-500">Fast & Low-cost L2</p>
+                    <h3 className="font-bold text-lg text-gray-900">{BOT_CHAIN_NAME}</h3>
+                    <p className="text-xs text-gray-500">BOT and USDT</p>
                   </div>
                 </div>
                 <Chip size="sm" color="success" variant="flat" className="font-bold text-[10px]">
@@ -106,7 +106,7 @@ export default function BasePage() {
             <CardBody className="p-6">
               <div className="flex items-center gap-3 mb-4">
                 <div className="w-10 h-10 rounded-2xl bg-primary-50 flex items-center justify-center p-2">
-                  <img src={BASE_LOGO} alt="Base" className="w-full h-full object-contain" />
+                  <img src={BASE_LOGO} alt="BOT Chain" className="w-full h-full object-contain" />
                 </div>
                 <div>
                   <h3 className="font-bold text-lg text-gray-900">Send & Withdraw</h3>
