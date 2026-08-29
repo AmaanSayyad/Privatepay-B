@@ -6,7 +6,6 @@ import { isCreateLinkDialogAtom } from "../../store/dialog-store.js";
 import { Icons } from "./Icons.jsx";
 import { useAppWallet } from "../../hooks/useAppWallet.js";
 import { APP_LOGO, BASE_LOGO } from "../../config.js";
-import { useEnsProfile } from "../../hooks/useEnsProfile.js";
 import { Globe } from "lucide-react";
 
 export default function PaymentHeader() {
@@ -52,7 +51,8 @@ export default function PaymentHeader() {
 
 const UserProfileButton = () => {
   const { account, connect } = useAppWallet();
-  const { name: ensName, avatar: ensAvatar } = useEnsProfile(account);
+  const ensName = null;
+  const ensAvatar = null;
 
   return (
     <div className={"flex flex-col relative"}>

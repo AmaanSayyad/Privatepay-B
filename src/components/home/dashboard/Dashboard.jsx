@@ -14,7 +14,6 @@ import { getUserBalance, registerUser, updateUsername } from "../../../lib/supab
 import BalanceChart from "./BalanceChart.jsx";
 import { notifyPaymentReceived, requestNotificationPermission } from "../../../utils/pwa-utils.js";
 import { PAYMENT_LINK_SUFFIX, BOTCHAIN_LOGO, USDT_LOGO, BOT_CHAIN_NAME } from "../../../config.js";
-import { useEnsProfile } from "../../../hooks/useEnsProfile.js";
 import { Globe } from "lucide-react";
 
 export default function Dashboard() {
@@ -93,7 +92,7 @@ function ReceiveCard({ setOpenQr, user, isLoading }) {
   const [mode, setMode] = useState("username");
   const [username, setUsername] = useState("");
   const [isEditingUsername, setIsEditingUsername] = useState(false);
-  const { name: ensName } = useEnsProfile(account);
+  const ensName = null;
 
   // Load username from localStorage
   useEffect(() => {

@@ -7,7 +7,6 @@ import {
 // Branding logos
 export const APP_LOGO = "/assets/private-pay-logo.svg"; // Private-Pay app logo
 export const BASE_LOGO = "/baselogo.png";
-export const ENS_LOGO = "/ethereum-name-service-ens-logo.png";
 export const USDC_LOGO = "/usd-coin-usdc-logo.png";
 export const ETH_LOGO = "/ethereum-eth-logo.png";
 export const BOTCHAIN_LOGO = "/botchain.png";
@@ -17,12 +16,10 @@ export const PAYMENT_LINK_SUFFIX = ".privatepay.base";
 // Treasury address — from .env
 const _sharedTreasury = typeof import.meta !== "undefined" && import.meta.env?.VITE_SHARED_TREASURY_ADDRESS?.trim();
 const _baseTreasury = typeof import.meta !== "undefined" && import.meta.env?.VITE_BASE_TREASURY_ADDRESS?.trim();
-const _ensTreasury = typeof import.meta !== "undefined" && import.meta.env?.VITE_ENS_TREASURY_ADDRESS?.trim();
 const _defaultTreasury = "0x71197e7a1CA5A2cb2AD82432B924F69B1E3dB123";
 
 export const SHARED_TREASURY_ADDRESS = _sharedTreasury || _baseTreasury || _defaultTreasury;
 export const BASE_TREASURY_ADDRESS = _baseTreasury || _sharedTreasury || _defaultTreasury;
-export const ENS_TREASURY_ADDRESS = _ensTreasury || _sharedTreasury || _defaultTreasury;
 
 // ---------------------------------------------------------------------------
 // BOT Chain — canonical chain config lives in ./botchain.js
@@ -55,24 +52,7 @@ export const USDC_ADDRESS = BOTCHAIN_USDT_ADDRESS;
 // `baseSepolia` is now BOT Chain. Alias kept so the 20 existing imports keep working.
 export const baseSepolia = botChain;
 
-// Ethereum mainnet — kept ONLY for read-only ENS name resolution (no ENS registry
-// exists on BOT Chain yet). No funds ever move on this chain. See ADR-1 in
-// BOTCHAIN_MIGRATION.md; replaced by an on-chain BOT Chain name registry in Faz 5.
-const _ethMainnetRpc = typeof import.meta !== "undefined" && import.meta.env?.VITE_ETH_MAINNET_RPC_URL?.trim();
-export const mainnet = {
-  id: 1,
-  name: "Ethereum",
-  network: "homestead",
-  nativeCurrency: { decimals: 18, name: "Ether", symbol: "ETH" },
-  rpcUrls: {
-    default: { http: [_ethMainnetRpc || "https://ethereum-rpc.publicnode.com"] },
-    public: { http: [_ethMainnetRpc || "https://ethereum-rpc.publicnode.com"] },
-  },
-  blockExplorers: { default: { name: "Etherscan", url: "https://etherscan.io" } },
-  testnet: false,
-};
-
-export const CHAINS = [botChain, mainnet];
+export const CHAINS = [botChain];
 export const MAINNET_CHAINS = [botChain];
 export const TESTNET_CHAINS = botChain.testnet ? [botChain] : [];
-export const customEvmNetworks = [botChain, mainnet];
+export const customEvmNetworks = [botChain];

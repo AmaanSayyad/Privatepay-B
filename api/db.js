@@ -68,19 +68,6 @@ const actions = {
     return one(`select * from users where wallet_address = $1`, [walletAddress]);
   },
 
-  async getUserByEnsName({ ensName }) {
-    if (!ensName) return null;
-    return one(`select * from users where lower(ens_name) = lower($1)`, [ensName]);
-  },
-
-  async syncEnsProfile({ walletAddress, ensName, ensAvatar }) {
-    if (!walletAddress) return null;
-    return one(
-      `update users set ens_name = $2, ens_avatar = $3 where wallet_address = $1 returning *`,
-      [String(walletAddress).toLowerCase(), ensName ?? null, ensAvatar ?? null]
-    );
-  },
-
   async getPaymentLinkByUsername({ username }) {
     if (!username) return null;
     return one(`select * from payment_links where username = $1`, [username]);

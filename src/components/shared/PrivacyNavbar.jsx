@@ -18,16 +18,7 @@ export default function PrivacyNavbar() {
                     <Send className="size-4" />
                     Send
                 </Link>
-                <Link
-                    to={"/ens"}
-                    className={cnm(
-                        "px-4 py-2 rounded-full flex items-center gap-2 transition-all duration-300 hover:bg-primary/10",
-                        `${location.pathname.startsWith("/ens") ? "bg-primary text-white hover:bg-primary/90" : "text-gray-600"}`
-                    )}
-                >
-                    <Globe className="size-4" />
-                    ENS Hub
-                </Link>
+                
             </div>
         </div>
     );

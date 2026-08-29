@@ -64,14 +64,6 @@ await check('createPaymentLink / getPaymentLinks / byAlias / byUsername', async 
   assert.equal((await actions.getPaymentLinkByUsername({ username })).alias, alias);
 });
 
-await check('syncEnsProfile / getUserByEnsName', async () => {
-  const ensName = `${username}.eth`;
-  await actions.syncEnsProfile({ walletAddress: wallet, ensName, ensAvatar: null });
-  // syncEnsProfile lowercases the wallet, so look the user up by ENS instead.
-  const found = await actions.getUserByEnsName({ ensName: ensName.toUpperCase() });
-  assert.ok(found, 'ENS lookup should be case-insensitive');
-});
-
 await check('recordPayment credits the balance', async () => {
   await actions.recordPayment({
     senderAddress: '0xsender',

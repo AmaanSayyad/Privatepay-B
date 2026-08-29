@@ -8,7 +8,6 @@ import { useModal } from "connectkit";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { APP_LOGO, BASE_LOGO, baseSepolia } from "../../config.js";
-import { useEnsProfile } from "../../hooks/useEnsProfile.js";
 import { Globe } from "lucide-react";
 
 export default function Header() {
@@ -44,7 +43,8 @@ export default function Header() {
 
 const UserProfileButton = () => {
   const { account, isConnected, connect, disconnect } = useAppWallet();
-  const { name: ensName, avatar: ensAvatar } = useEnsProfile(account);
+  const ensName = null;
+  const ensAvatar = null;
   const { setOpen } = useModal();
   const [showMenu, setShowMenu] = useState(false);
 

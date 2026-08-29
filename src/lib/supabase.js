@@ -215,32 +215,6 @@ export async function getUserByWallet(walletAddress) {
 }
 
 /**
- * Look up a user by their cached ENS name
- */
-export async function getUserByEnsName(ensName) {
-  if (!ensName) return null;
-  try {
-    return await call('getUserByEnsName', { ensName });
-  } catch (error) {
-    console.error('Error getting user by ENS name:', error);
-    return null;
-  }
-}
-
-/**
- * Cache a resolved ENS name/avatar on the user row
- */
-export async function syncEnsProfile(walletAddress, ensName, ensAvatar) {
-  if (!walletAddress || !ensName) return null;
-  try {
-    return await call('syncEnsProfile', { walletAddress, ensName, ensAvatar });
-  } catch (error) {
-    console.warn('[ENS Sync] Could not sync ENS to database:', error.message);
-    return null;
-  }
-}
-
-/**
  * Get payment link by the username it was created under (not the alias)
  */
 export async function getPaymentLinkByUsername(username) {

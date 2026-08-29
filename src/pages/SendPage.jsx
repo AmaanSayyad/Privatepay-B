@@ -11,7 +11,7 @@ import { Send, ArrowDownToLine, ExternalLink, CheckCircle2, AlertCircle, Globe, 
 import toast from 'react-hot-toast';
 import { ethers } from 'ethers';
 import { useEnsName } from 'wagmi';
-import { BASE_LOGO, ENS_LOGO, USDC_LOGO, ETH_LOGO, USDC_ADDRESS, BASE_TREASURY_ADDRESS, ENS_TREASURY_ADDRESS, baseSepolia, mainnet } from '../config.js';
+import { BASE_LOGO, USDC_LOGO, ETH_LOGO, USDC_ADDRESS, BASE_TREASURY_ADDRESS, baseSepolia } from '../config.js';
 
 const USDC_ABI = [
   "function transfer(address to, uint256 amount) public returns (bool)",
@@ -19,7 +19,7 @@ const USDC_ABI = [
   "function decimals() public view returns (uint8)"
 ];
 
-import { getUserBalance, withdrawFunds, getUserByWallet, getUserByUsername, getPaymentLinkByAlias, getPaymentLinkByUsername, getUserByEnsName, recordPayment } from '../lib/supabase.js';
+import { getUserBalance, withdrawFunds, getUserByWallet, getUserByUsername, getPaymentLinkByAlias, getPaymentLinkByUsername, recordPayment } from '../lib/supabase.js';
 import { useAppWallet } from '../hooks/useAppWallet.js';
 
 // When VITE_BACKEND_URL is set (e.g. local backend on 3400), use it; else use same-origin /api (Vercel serverless)
@@ -30,11 +30,11 @@ export default function SendPage() {
   const location = useLocation();
   const navigate = useNavigate();
   const hash = (location.hash || '#send').replace('#', '') || 'send';
-  const [activeTab, setActiveTab] = useState(hash === 'withdraw' ? 'withdraw' : hash === 'ens' ? 'ens' : 'send');
+  const [activeTab, setActiveTab] = useState(hash === 'withdraw' ? 'withdraw' : 'send');
 
   useEffect(() => {
     const h = (location.hash || '#send').replace('#', '') || 'send';
-    setActiveTab(h === 'withdraw' ? 'withdraw' : h === 'ens' ? 'ens' : 'send');
+    setActiveTab(h === 'withdraw' ? 'withdraw' : 'send');
   }, [location.hash]);
 
   const setTab = (tab) => {
@@ -65,20 +65,10 @@ export default function SendPage() {
             <ArrowDownToLine className="size-5" />
             Withdraw
           </button>
-          <button
-            type="button"
-            onClick={() => setTab('ens')}
-            className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl font-semibold transition-all ${activeTab === 'ens' ? 'bg-primary text-white shadow' : 'text-primary-700 hover:bg-primary-50'
-              }`}
-          >
-            <Globe className="size-5" />
-            ENS
-          </button>
           </div>
 
           {activeTab === 'send' && <SendTab />}
           {activeTab === 'withdraw' && <WithdrawTab />}
-          {activeTab === 'ens' && <EnsTab />}
         </div>
       </div>
     </div>
@@ -125,15 +115,6 @@ function SendTab() {
         recipientWalletAddress = userByName.wallet_address;
       }
 
-      // 1.1 ENS name search against the cached ens_name column
-      if (!recipientUsername && (isEnsInput || true)) {
-        const userByEns = await getUserByEnsName(rawRecipient);
-
-        if (userByEns) {
-          recipientUsername = userByEns.username;
-          recipientWalletAddress = userByEns.wallet_address;
-        }
-      }
       if (!recipientUsername) {
         // 2. payment_links tablosunda alias olarak ara
         const linkByAlias = await getPaymentLinkByAlias(alias);
@@ -149,38 +130,6 @@ function SendTab() {
         if (linkByUser) {
           recipientUsername = linkByUser.alias || linkByUser.username;
           recipientWalletAddress = linkByUser.wallet_address;
-        }
-      }
-
-      // 3.5 Live ENS Resolution (L1) if still not found
-      if (!recipientUsername && isEnsInput) {
-        toast.loading('Resolving ENS name...', { id: 'ens-resolving' });
-        try {
-          const rpcUrl = import.meta.env.VITE_ETH_MAINNET_RPC_URL || mainnet.rpcUrls.default.http[0];
-          console.log(`[SendPage] Resolving "${rawRecipient}" using RPC: ${rpcUrl}`);
-          
-          const provider = new ethers.JsonRpcProvider(rpcUrl, 1, { staticNetwork: true });
-          const resolved = await provider.resolveName(rawRecipient);
-          toast.dismiss('ens-resolving');
-
-          if (resolved) {
-            console.log(`[SendPage] Resolved "${rawRecipient}" to:`, resolved);
-            // Check if this resolved wallet is in our DB
-            const userByWallet = await getUserByWallet(resolved);
-            if (userByWallet) {
-              recipientUsername = userByWallet.username;
-              recipientWalletAddress = userByWallet.wallet_address;
-            } else {
-              // Not a Private-Pay user yet, but valid address
-              recipientUsername = rawRecipient.toLowerCase();
-              recipientWalletAddress = resolved;
-            }
-          } else {
-            console.warn(`[SendPage] Could not resolve ENS name: ${rawRecipient}`);
-          }
-        } catch (e) {
-          toast.dismiss('ens-resolving');
-          console.error('[SendPage] ENS resolution failed:', e);
         }
       }
 
@@ -669,208 +618,6 @@ function WithdrawTab() {
             startContent={!loading && <ArrowDownToLine size={18} />}
           >
             {loading ? 'Processing...' : 'Withdraw'}
-          </Button>
-        </div>
-      </CardBody>
-    </Card>
-  );
-}
-
-function EnsTab() {
-  const { account, isConnected, connect, signer } = useAppWallet();
-  const { data: userEnsName } = useEnsName({ address: account, chainId: 1 });
-  const [recipient, setRecipient] = useState('');
-  const [resolvedAddress, setResolvedAddress] = useState('');
-  const [amount, setAmount] = useState('0.01');
-  const [loading, setLoading] = useState(false);
-  const [resolving, setResolving] = useState(false);
-
-  const resolveENS = async (name) => {
-    const trimmedName = (name || '').trim();
-    if (!trimmedName || !trimmedName.includes('.')) {
-      setResolvedAddress('');
-      return;
-    }
-    if (/^[\d.]+$/.test(trimmedName)) {
-      setResolvedAddress('');
-      return;
-    }
-    setResolving(true);
-    try {
-      const rpcUrl = import.meta.env.VITE_ETH_MAINNET_RPC_URL || mainnet.rpcUrls.default.http[0];
-      const provider = new ethers.JsonRpcProvider(rpcUrl, 1, { staticNetwork: true });
-      const address = await provider.resolveName(trimmedName);
-      setResolvedAddress(address || '');
-    } catch (e) {
-      console.error('[EnsTab] ENS resolution error:', e);
-      setResolvedAddress('');
-    } finally {
-      setResolving(false);
-    }
-  };
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      if (recipient) resolveENS(recipient);
-    }, 500);
-    return () => clearTimeout(timer);
-  }, [recipient]);
-
-  const handleSendShielded = async () => {
-    if (!isConnected || !signer) {
-      toast.error('Connect wallet first');
-      return;
-    }
-    const amountNum = parseFloat(amount);
-    if (isNaN(amountNum) || amountNum <= 0) {
-      toast.error('Enter a valid amount');
-      return;
-    }
-    const MIN_ETH = 0.00001;
-    if (amountNum < MIN_ETH) {
-      toast.error(`Minimum amount is ${MIN_ETH} ETH (dust amounts can fail on-chain)`);
-      return;
-    }
-    setLoading(true);
-    const trimmedRecipient = recipient.trim();
-    let target = resolvedAddress;
-    try {
-      const network = await signer.provider.getNetwork();
-      const expectedChainId = BigInt(baseSepolia.id);
-      if (network.chainId !== expectedChainId) {
-        toast.error(`Switch to Base Sepolia in your wallet (current: ${network.chainId})`);
-        setLoading(false);
-        return;
-      }
-      if (!target || !ethers.isAddress(target)) {
-        if (ethers.isAddress(trimmedRecipient)) {
-          target = trimmedRecipient;
-        } else if (trimmedRecipient.includes('.')) {
-          toast.loading('Resolving address...', { id: 'jit-ens' });
-          const rpcUrl = import.meta.env.VITE_ETH_MAINNET_RPC_URL || mainnet.rpcUrls.default.http[0];
-          const provider = new ethers.JsonRpcProvider(rpcUrl, 1, { staticNetwork: true });
-          target = await provider.resolveName(trimmedRecipient);
-          toast.dismiss('jit-ens');
-        }
-      }
-      if (!target || !ethers.isAddress(target)) {
-        toast.error('Invalid recipient address');
-        setLoading(false);
-        return;
-      }
-      const tx = await signer.sendTransaction({
-        to: ENS_TREASURY_ADDRESS,
-        value: ethers.parseEther(amount),
-      });
-      toast.loading('Confirming transaction...', { id: 'ens-tx' });
-      const receipt = await tx.wait();
-      if (!receipt || receipt.status !== 1) {
-        toast.error('Transaction reverted on-chain. Check your wallet network (use Base Sepolia).', { id: 'ens-tx' });
-        setLoading(false);
-        return;
-      }
-      const explorerUrl = baseSepolia.blockExplorers.default.url;
-      toast.success(
-        <div>
-          <p className="font-bold">Transfer sent (privacy shielded)</p>
-          <a href={`${explorerUrl}/tx/${tx.hash}`} target="_blank" rel="noopener noreferrer" className="text-xs text-blue-500 underline">View on Base Sepolia Explorer</a>
-        </div>,
-        { id: 'ens-tx', duration: 8000 }
-      );
-      await recordPayment(account, trimmedRecipient, amountNum, tx.hash, { currency: 'SEPOLIA_ETH' });
-      setAmount('0.01');
-      setRecipient('');
-      setResolvedAddress('');
-    } catch (e) {
-      console.error('[EnsTab] Transfer error:', e);
-      toast.dismiss('jit-ens');
-      toast.error(e?.message || 'Transfer failed');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  if (!isConnected) {
-    return (
-      <Card className="w-full bg-white border border-gray-200 shadow-md rounded-3xl">
-        <CardBody className="p-8 flex flex-col items-center gap-6">
-          <div className="w-16 h-16 rounded-2xl bg-primary-50 flex items-center justify-center p-3">
-            <img src={ENS_LOGO} alt="ENS" className="size-10 object-contain" />
-          </div>
-          <div className="text-center space-y-2">
-            <h3 className="text-xl font-bold text-gray-900">Connect wallet for ENS</h3>
-            <p className="text-gray-500 text-sm">Resolve .eth names and send shielded ETH via ENS Treasury.</p>
-          </div>
-          <Button onClick={connect} className="w-full bg-primary hover:bg-primary-800 text-white font-bold h-12 rounded-2xl">
-            Connect Wallet
-          </Button>
-        </CardBody>
-      </Card>
-    );
-  }
-
-  return (
-    <Card className="w-full bg-white border border-gray-200 shadow-md rounded-3xl">
-      <CardBody className="p-6">
-        <div className="flex items-center gap-3 mb-4">
-          <div className="w-10 h-10 rounded-2xl bg-primary-50 flex items-center justify-center p-2 shrink-0">
-            <img src={ENS_LOGO} alt="ENS" className="size-6 object-contain" />
-          </div>
-          <div>
-            <h3 className="text-lg font-bold text-gray-900">ENS + Base</h3>
-            <p className="text-xs text-gray-500">Resolve .eth names (Ethereum mainnet) and send on Base. Your ENS: {userEnsName || 'none'}</p>
-          </div>
-        </div>
-
-        <div className="space-y-4">
-          <div className="space-y-1.5">
-            <label className="text-xs font-bold text-gray-500 px-1 uppercase tracking-wider">Recipient (ENS or 0x...)</label>
-            <Input
-              placeholder="vitalik.eth or 0x..."
-              value={recipient}
-              onChange={(e) => setRecipient(e.target.value)}
-              variant="bordered"
-              radius="lg"
-              classNames={{ inputWrapper: 'border-neutral-200' }}
-              endContent={resolving ? <Spinner size="sm" /> : null}
-            />
-            {resolvedAddress && (
-              <div className="mt-1 flex items-center gap-1.5 px-2">
-                <CheckCircle className="size-3 text-green-500" />
-                <span className="text-[10px] text-green-600 font-mono italic">Resolves to: {resolvedAddress.slice(0, 10)}...{resolvedAddress.slice(-8)}</span>
-              </div>
-            )}
-          </div>
-
-          <div className="space-y-1.5">
-            <label className="text-xs font-bold text-gray-500 px-1 uppercase tracking-wider">Amount (ETH)</label>
-            <Input
-              type="number"
-              placeholder="0.0"
-              value={amount}
-              onChange={(e) => setAmount(e.target.value)}
-              variant="bordered"
-              radius="lg"
-              classNames={{ inputWrapper: 'border-neutral-200' }}
-              endContent={<span className="text-xs text-gray-400 font-bold">ETH</span>}
-            />
-          </div>
-
-          <div className="p-4 bg-amber-50 rounded-2xl border border-amber-100 flex gap-3">
-            <AlertCircle className="size-5 text-amber-600 shrink-0 mt-0.5" />
-            <p className="text-xs text-amber-800 leading-relaxed">
-              Sending to the ENS Treasury obfuscates your identity. Standard gas fees apply. Use <strong>Base Sepolia</strong> in your wallet.
-            </p>
-          </div>
-
-          <Button
-            onClick={handleSendShielded}
-            isLoading={loading}
-            isDisabled={!recipient || !amount}
-            className="w-full bg-primary h-12 text-white font-semibold rounded-full"
-            startContent={!loading && <Send className="size-5" />}
-          >
-            Send Shielded ETH
           </Button>
         </div>
       </CardBody>

@@ -13,7 +13,7 @@ const USDC_ABI = [
 ];
 
 import SuccessDialog from "../dialogs/SuccessDialog.jsx";
-// Wallet connect via ConnectKit (Base + mainnet for ENS)
+// Wallet connect via ConnectKit (BOT Chain)
 
 export default function Payment() {
   const loaderData = useLoaderData();

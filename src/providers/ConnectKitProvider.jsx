@@ -3,15 +3,14 @@ import { injected } from "wagmi/connectors";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ConnectKitProvider as FamilyConnectKitProvider } from "connectkit";
 
-import { baseSepolia, mainnet } from "../config";
+import { baseSepolia } from "../config";
 
-// Base + mainnet only (mainnet for ENS resolution)
+// BOT Chain only
 const config = createConfig({
-    chains: [baseSepolia, mainnet],
+    chains: [baseSepolia],
     connectors: [injected()],
     transports: {
         [baseSepolia.id]: http(baseSepolia.rpcUrls.default.http[0]),
-        [mainnet.id]: http(mainnet.rpcUrls.default.http[0]),
     },
 });
 

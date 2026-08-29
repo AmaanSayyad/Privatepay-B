@@ -82,7 +82,6 @@ export const router = createBrowserRouter([
       { path: "/send", element: <LazyRoute Component={SendPage} routeName="Send" /> },
       { path: "/transfer", element: <LazyRoute Component={TransferPage} /> },
       { path: "/base", element: <LazyRoute Component={BasePage} routeName="Base" /> },
-      { path: "/ens", element: <Navigate to="/send#ens" replace /> },
     ],
   },
   {
