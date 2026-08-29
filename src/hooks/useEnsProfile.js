@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useEnsName, useEnsAvatar } from 'wagmi';
 import { mainnet } from '../config';
-import { supabase } from '../lib/supabase';
+import { syncEnsProfile } from '../lib/supabase';
 
 /**
  * Hook to fetch ENS data for a wallet address and sync it with Supabase.
@@ -43,17 +43,9 @@ async function syncEnsWithSupabase(address, name, avatar) {
   if (!address || !name) return;
   
   try {
-    const { error } = await supabase
-      .from('users')
-      .update({ 
-        ens_name: name,
-        ens_avatar: avatar
-      })
-      .eq('wallet_address', address.toLowerCase());
-      
-    if (error) {
-      console.warn('[ENS Sync] Could not sync ENS to database:', error.message);
-    } else {
+    const updated = await syncEnsProfile(address, name, avatar);
+
+    if (updated) {
       console.log('[ENS Sync] Successfully synced ENS for', address);
     }
   } catch (err) {

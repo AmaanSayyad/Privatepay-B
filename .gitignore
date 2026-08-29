@@ -42,3 +42,6 @@ coverage.json
 
 # Optional
 *.tgz
+
+# local migration plan (not committed)
+BOTCHAIN_MIGRATION.md

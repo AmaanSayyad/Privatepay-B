@@ -19,7 +19,7 @@ const USDC_ABI = [
   "function decimals() public view returns (uint8)"
 ];
 
-import { getUserBalance, withdrawFunds, getUserByWallet, getUserByUsername, getPaymentLinkByAlias, recordPayment, supabase } from '../lib/supabase.js';
+import { getUserBalance, withdrawFunds, getUserByWallet, getUserByUsername, getPaymentLinkByAlias, getPaymentLinkByUsername, getUserByEnsName, recordPayment } from '../lib/supabase.js';
 import { useAppWallet } from '../hooks/useAppWallet.js';
 
 // When VITE_BACKEND_URL is set (e.g. local backend on 3400), use it; else use same-origin /api (Vercel serverless)
@@ -125,20 +125,16 @@ function SendTab() {
         recipientWalletAddress = userByName.wallet_address;
       }
 
-      // 1.1 ENS Name Search in Supabase
+      // 1.1 ENS name search against the cached ens_name column
       if (!recipientUsername && (isEnsInput || true)) {
-        const { data: userByEns } = await supabase
-          .from('users')
-          .select('username, wallet_address, ens_name')
-          .ilike('ens_name', rawRecipient.toLowerCase())
-          .maybeSingle();
-        
+        const userByEns = await getUserByEnsName(rawRecipient);
+
         if (userByEns) {
           recipientUsername = userByEns.username;
           recipientWalletAddress = userByEns.wallet_address;
         }
       }
-      if (!recipientUsername && supabase) {
+      if (!recipientUsername) {
         // 2. payment_links tablosunda alias olarak ara
         const linkByAlias = await getPaymentLinkByAlias(alias);
         if (linkByAlias) {
@@ -147,13 +143,9 @@ function SendTab() {
         }
       }
 
-      if (!recipientUsername && supabase) {
+      if (!recipientUsername) {
         // 3. payment_links tablosunda username olarak ara
-        const { data: linkByUser } = await supabase
-          .from('payment_links')
-          .select('wallet_address, alias, username')
-          .eq('username', alias)
-          .maybeSingle();
+        const linkByUser = await getPaymentLinkByUsername(alias);
         if (linkByUser) {
           recipientUsername = linkByUser.alias || linkByUser.username;
           recipientWalletAddress = linkByUser.wallet_address;
@@ -193,7 +185,7 @@ function SendTab() {
       }
 
       // 4. Fallback: 0x adresi girilmişse users'ta wallet_address ile ara
-      if (!recipientUsername && ethers.isAddress(rawRecipient) && supabase) {
+      if (!recipientUsername && ethers.isAddress(rawRecipient)) {
         const userByWallet = await getUserByWallet(rawRecipient);
         if (userByWallet) {
           recipientUsername = userByWallet.username;
@@ -395,7 +387,7 @@ function SendTab() {
 }
 
 function WithdrawTab() {
-  const { account, isConnected } = useAppWallet();
+  const { account, isConnected, connect } = useAppWallet();
   const [username, setUsername] = useState('');
   const [ethBalance, setEthBalance] = useState(0);
   const [usdcBalance, setUsdcBalance] = useState(0);
@@ -477,22 +469,15 @@ function WithdrawTab() {
           const linkByAlias = await getPaymentLinkByAlias(alias);
           if (linkByAlias && linkByAlias.wallet_address) {
             finalDestination = linkByAlias.wallet_address;
-          } else if (supabase) {
+          } else {
             // 3. payment_links tablosunda username olarak ara
-            const { data: linkByUsername } = await supabase
-              .from('payment_links')
-              .select('wallet_address')
-              .eq('username', alias)
-              .maybeSingle();
+            const linkByUsername = await getPaymentLinkByUsername(alias);
             if (linkByUsername && linkByUsername.wallet_address) {
               finalDestination = linkByUsername.wallet_address;
             } else {
               toast.error(`Kullanıcı "${alias}" bulunamadı!`);
               return;
             }
-          } else {
-            toast.error(`Kullanıcı "${alias}" bulunamadı!`);
-            return;
           }
         }
       } catch (err) {

@@ -124,6 +124,10 @@ function StepOne({ setStep, setOpen }) {
 
     setLoading(true);
 
+    // Base-only build: the Sapphire stealth-signer path is disabled. Declared
+    // here (not inside the try) because the catch block below reads it too.
+    const sapphireTestnet = null;
+
     try {
       toast.loading(
         "Preparing meta address, please sign the transaction...",
@@ -153,7 +157,6 @@ function StepOne({ setStep, setOpen }) {
       }
 
       // Base-only: register username via backend or local state
-      const sapphireTestnet = null;
       if (!sapphireTestnet) {
         toast.dismiss("loading-meta-address");
         try {
