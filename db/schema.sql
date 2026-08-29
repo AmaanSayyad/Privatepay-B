@@ -34,10 +34,9 @@ create table if not exists balances (
   id                  uuid primary key default gen_random_uuid(),
   username            text unique,
   wallet_address      text unique,
-  eth_balance         numeric(38, 18) not null default 0,
-  usdc_balance        numeric(38, 18) not null default 0,
+  eth_balance         numeric(38, 18) not null default 0, -- BOT
+  usdc_balance        numeric(38, 18) not null default 0, -- USDT
   sepolia_eth_balance numeric(38, 18) not null default 0,
-  bitgo_teth_balance  numeric(38, 18) not null default 0,
   created_at          timestamptz not null default now(),
   updated_at          timestamptz not null default now()
 );
@@ -72,21 +71,12 @@ create table if not exists point_transactions (
   created_at             timestamptz not null default now()
 );
 
-create table if not exists bitgo_addresses (
-  id             uuid primary key default gen_random_uuid(),
-  username       text,
-  wallet_address text,
-  bitgo_address  text not null,
-  label          text,
-  created_at     timestamptz not null default now()
-);
 
 create index if not exists payments_recipient_idx on payments (recipient_username);
 create index if not exists payments_sender_idx    on payments (sender_address);
 create index if not exists payments_created_idx   on payments (created_at desc);
 create index if not exists links_wallet_idx       on payment_links (wallet_address);
 create index if not exists point_tx_wallet_idx    on point_transactions (wallet_address, created_at desc);
-create index if not exists bitgo_username_idx     on bitgo_addresses (username, created_at desc);
 
 -- Replaces the Supabase `award_points` RPC.
 create or replace function award_points(

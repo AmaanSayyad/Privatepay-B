@@ -11,7 +11,7 @@ import { Send, ArrowDownToLine, ExternalLink, CheckCircle2, AlertCircle, Globe, 
 import toast from 'react-hot-toast';
 import { ethers } from 'ethers';
 import { useEnsName } from 'wagmi';
-import { BASE_LOGO, ENS_LOGO, USDC_LOGO, ETH_LOGO, BITGO_LOGO, USDC_ADDRESS, BASE_TREASURY_ADDRESS, ENS_TREASURY_ADDRESS, baseSepolia, mainnet } from '../config.js';
+import { BASE_LOGO, ENS_LOGO, USDC_LOGO, ETH_LOGO, USDC_ADDRESS, BASE_TREASURY_ADDRESS, ENS_TREASURY_ADDRESS, baseSepolia, mainnet } from '../config.js';
 
 const USDC_ABI = [
   "function transfer(address to, uint256 amount) public returns (bool)",

@@ -13,17 +13,17 @@ import { useAppWallet } from "../../../hooks/useAppWallet.js";
 import { getUserBalance, registerUser, updateUsername } from "../../../lib/supabase.js";
 import BalanceChart from "./BalanceChart.jsx";
 import { notifyPaymentReceived, requestNotificationPermission } from "../../../utils/pwa-utils.js";
-import { PAYMENT_LINK_SUFFIX, ETH_LOGO, USDC_LOGO, BITGO_LOGO } from "../../../config.js";
+import { PAYMENT_LINK_SUFFIX, BOTCHAIN_LOGO, USDT_LOGO, BOT_CHAIN_NAME } from "../../../config.js";
 import { useEnsProfile } from "../../../hooks/useEnsProfile.js";
 import { Globe } from "lucide-react";
 
 export default function Dashboard() {
   const [openQr, setOpenQr] = useState(false);
   const { account } = useAppWallet();
-  const [balance, setBalance] = useState({ eth: 0, usdc: 0, bitgo: 0 });
+  const [balance, setBalance] = useState({ bot: 0, usdt: 0 });
   const [selectedCurrency, setSelectedCurrency] = useState("ETH");
   const [isLoadingBalance, setIsLoadingBalance] = useState(true);
-  const previousBalanceRef = useRef({ eth: 0, usdc: 0, bitgo: 0 });
+  const previousBalanceRef = useRef({ bot: 0, usdt: 0 });
 
   useEffect(() => {
     async function loadBalance() {
@@ -39,9 +39,8 @@ export default function Dashboard() {
         const balanceData = await getUserBalance(username);
         const ethBal = Number(balanceData?.eth_balance || 0);
         const usdcBal = Number(balanceData?.usdc_balance || 0);
-        const bitgoBal = Number(balanceData?.bitgo_teth_balance || 0);
         
-        setBalance({ eth: ethBal, usdc: usdcBal, bitgo: bitgoBal }); 
+        setBalance({ bot: ethBal, usdt: usdcBal });
         setIsLoadingBalance(false);
 
         if (previousBalanceRef.current.eth > 0 && ethBal > previousBalanceRef.current.eth) {
@@ -51,9 +50,9 @@ export default function Dashboard() {
         }
         previousBalanceRef.current = { eth: ethBal, usdc: usdcBal };
       } else {
-        setBalance({ eth: 0, usdc: 0, bitgo: 0 });
+        setBalance({ bot: 0, usdt: 0 });
         setIsLoadingBalance(false);
-        previousBalanceRef.current = { eth: 0, usdc: 0, bitgo: 0 };
+        previousBalanceRef.current = { bot: 0, usdt: 0 };
       }
     }
 
@@ -281,14 +280,9 @@ function ReceiveCard({ setOpenQr, user, isLoading }) {
 function MergedBalanceCard({ balance, isLoading, selectedCurrency, setSelectedCurrency }) {
   const navigate = useNavigate();
 
-  const currentBalance = selectedCurrency === "ETH" 
-    ? balance.eth 
-    : (selectedCurrency === "USDC" ? balance.usdc : balance.bitgo);
+  const currentBalance = selectedCurrency === "USDT" ? balance.usdt : balance.bot;
 
-  const getNetworkLabel = () => {
-    if (selectedCurrency === "BITGO") return `BitGo Shielded (${import.meta.env.VITE_BITGO_ASSET_SYMBOL || 'tBaseETH'})`;
-    return "Base Testnet";
-  };
+  const getNetworkLabel = () => BOT_CHAIN_NAME;
 
   return (
     <div className="w-full rounded-3xl bg-gradient-to-br from-white to-primary-50/30 border border-neutral-200 shadow-sm overflow-hidden relative">
@@ -307,41 +301,31 @@ function MergedBalanceCard({ balance, isLoading, selectedCurrency, setSelectedCu
             <div>
               <p className="font-medium text-lg text-gray-700 mb-1">{getNetworkLabel()}</p>
               <p className="text-xs text-gray-500">
-                {selectedCurrency === "BITGO" ? "BitGo Multi-Sig Vault" : "Held in private treasury"}
+                {"Held in private treasury"}
               </p>
             </div>
             
             {/* Currency Selector with token/company logos */}
             <div className="flex bg-gray-100 p-1 rounded-full border border-gray-200">
               <button
-                onClick={() => setSelectedCurrency("ETH")}
+                onClick={() => setSelectedCurrency("BOT")}
                 className={cnm(
                   "flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold transition-all",
-                  selectedCurrency === "ETH" ? "bg-white text-primary shadow-sm" : "text-gray-500"
+                  selectedCurrency === "BOT" ? "bg-white text-primary shadow-sm" : "text-gray-500"
                 )}
               >
-                <img src={ETH_LOGO} alt="ETH" className="size-5 rounded-full object-contain shrink-0" />
-                ETH
+                <img src={BOTCHAIN_LOGO} alt="BOT" className="size-5 rounded-full object-contain shrink-0" />
+                BOT
               </button>
               <button
-                onClick={() => setSelectedCurrency("USDC")}
+                onClick={() => setSelectedCurrency("USDT")}
                 className={cnm(
                   "flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold transition-all",
-                  selectedCurrency === "USDC" ? "bg-white text-primary shadow-sm" : "text-gray-500"
+                  selectedCurrency === "USDT" ? "bg-white text-primary shadow-sm" : "text-gray-500"
                 )}
               >
-                <img src={USDC_LOGO} alt="USDC" className="size-5 rounded-full object-contain shrink-0" />
-                USDC
-              </button>
-              <button
-                onClick={() => setSelectedCurrency("BITGO")}
-                className={cnm(
-                  "flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold transition-all",
-                  selectedCurrency === "BITGO" ? "bg-white text-primary shadow-sm" : "text-gray-500"
-                )}
-              >
-                <img src={BITGO_LOGO} alt="BitGo" className="size-5 rounded-full object-contain shrink-0" />
-                BitGo
+                <img src={USDT_LOGO} alt="USDT" className="size-5 rounded-full object-contain shrink-0" />
+                USDT
               </button>
             </div>
           </div>
@@ -351,10 +335,10 @@ function MergedBalanceCard({ balance, isLoading, selectedCurrency, setSelectedCu
           ) : (
             <div className="flex items-baseline gap-2 mb-2">
               <p className="text-4xl font-bold text-primary">
-                {selectedCurrency === "USDC" ? currentBalance.toFixed(2) : currentBalance.toFixed(4)}
+                {selectedCurrency === "USDT" ? currentBalance.toFixed(2) : currentBalance.toFixed(4)}
               </p>
               <p className="text-lg font-semibold text-gray-600">
-                {selectedCurrency === "BITGO" ? (import.meta.env.VITE_BITGO_ASSET_SYMBOL || 'tBaseETH') : selectedCurrency}
+                {selectedCurrency}
               </p>
             </div>
           )}

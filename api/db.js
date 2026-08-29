@@ -35,7 +35,6 @@ const BALANCE_FIELDS = {
   USDC: 'usdc_balance',
   USDT: 'usdc_balance',
   SEPOLIA_ETH: 'sepolia_eth_balance',
-  BITGO_TETH: 'bitgo_teth_balance',
   ETH: 'eth_balance',
   BOT: 'eth_balance',
 };
@@ -295,22 +294,7 @@ const actions = {
 
   async getPointsConfig() {
     return many(`select * from points_config where is_active order by points_value desc`);
-  },
-
-  async saveBitGoAddress({ username, walletAddress, bitgoAddress, label }) {
-    return one(
-      `insert into bitgo_addresses (username, wallet_address, bitgo_address, label)
-       values ($1, $2, $3, $4) returning *`,
-      [username ?? null, walletAddress ?? null, bitgoAddress, label ?? '']
-    );
-  },
-
-  async getBitGoAddresses({ username }) {
-    return many(
-      `select * from bitgo_addresses where username = $1 order by created_at desc`,
-      [username]
-    );
-  },
+  }
 };
 
 export default async function handler(req, res) {

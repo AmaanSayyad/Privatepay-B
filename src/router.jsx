@@ -16,7 +16,6 @@ const MainBalancePage = lazy(() => import("./pages/MainBalancePage.jsx"));
 const PrivateBalancePage = lazy(() => import("./pages/PrivateBalancePage.jsx"));
 const SendPage = lazy(() => import("./pages/SendPage.jsx"));
 const BasePage = lazy(() => import("./pages/BasePage.jsx"));
-const BitGoPage = lazy(() => import("./pages/BitGoPage.jsx"));
 
 const PageLoader = () => (
   <div className="flex items-center justify-center min-h-screen">
@@ -84,7 +83,6 @@ export const router = createBrowserRouter([
       { path: "/transfer", element: <LazyRoute Component={TransferPage} /> },
       { path: "/base", element: <LazyRoute Component={BasePage} routeName="Base" /> },
       { path: "/ens", element: <Navigate to="/send#ens" replace /> },
-      { path: "/bitgo", element: <LazyRoute Component={BitGoPage} routeName="BitGo Shielded Hub" /> },
     ],
   },
   {

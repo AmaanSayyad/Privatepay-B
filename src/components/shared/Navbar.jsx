@@ -52,16 +52,7 @@ export default function Navbar() {
           <span>ENS Hub</span>
         </Link>
 
-        <Link
-          to={"/bitgo"}
-          className={cnm(
-            "px-3 py-2 rounded-full flex items-center gap-1.5 transition-all duration-300 whitespace-nowrap",
-            location.pathname === "/bitgo" ? "bg-primary text-white" : ""
-          )}
-        >
-          <Shield className="size-3.5" />
-          <span>BitGo Shield</span>
-        </Link>
+        
 
       </div>
     </div>

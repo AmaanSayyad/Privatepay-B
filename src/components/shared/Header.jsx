@@ -7,7 +7,7 @@ import { useAppWallet } from "../../hooks/useAppWallet.js";
 import { useModal } from "connectkit";
 import { useState } from "react";
 import toast from "react-hot-toast";
-import { APP_LOGO, BASE_LOGO, BITGO_LOGO, baseSepolia } from "../../config.js";
+import { APP_LOGO, BASE_LOGO, baseSepolia } from "../../config.js";
 import { useEnsProfile } from "../../hooks/useEnsProfile.js";
 import { Globe } from "lucide-react";
 

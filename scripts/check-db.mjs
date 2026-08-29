@@ -125,12 +125,6 @@ await check('points: getUserPoints seeds a row, awardPoints is a no-op without c
   assert.ok(Array.isArray(await actions.getPointsConfig()));
 });
 
-await check('bitgo addresses round-trip', async () => {
-  await actions.saveBitGoAddress({ username, walletAddress: wallet, bitgoAddress: '0xbitgo', label: 'x' });
-  const list = await actions.getBitGoAddresses({ username });
-  assert.equal(list.length, 1);
-});
-
 await check('deletePaymentLink removes the row', async () => {
   const link = await actions.getPaymentLinkByAlias({ alias });
   await actions.deletePaymentLink({ id: link.id });
@@ -142,7 +136,6 @@ const cleanup = new pg.Client({ connectionString: url });
 await cleanup.connect();
 await cleanup.query('delete from payments where recipient_username = $1 or sender_address = $2', [username, '0xsender']);
 await cleanup.query('delete from balances where wallet_address = $1', [wallet]);
-await cleanup.query('delete from bitgo_addresses where username = $1', [username]);
 await cleanup.query('delete from point_transactions where wallet_address = $1', [wallet]);
 await cleanup.query('delete from user_points where wallet_address = $1', [wallet]);
 await cleanup.query('delete from payment_links where wallet_address = $1', [wallet]);

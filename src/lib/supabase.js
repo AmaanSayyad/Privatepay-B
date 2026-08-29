@@ -8,7 +8,7 @@
  * server-side action allow-list in api/db.js.
  *
  * Tables: users, payments, balances, payment_links, user_points,
- *         point_transactions, points_config, bitgo_addresses
+ *         point_transactions, points_config
  */
 
 const API_BASE = (import.meta.env?.VITE_BACKEND_URL || '').replace(/\/$/, '');
@@ -59,7 +59,6 @@ const EMPTY_BALANCE = {
   eth_balance: 0,
   usdc_balance: 0,
   sepolia_eth_balance: 0,
-  bitgo_teth_balance: 0,
 };
 
 /**
@@ -442,30 +441,6 @@ export async function getPointsConfig() {
     return (await call('getPointsConfig')) || [];
   } catch (error) {
     console.error('Error getting points config:', error);
-    return [];
-  }
-}
-
-/**
- * Save a newly generated BitGo address
- */
-export async function saveBitGoAddress(username, walletAddress, bitgoAddress, label = '') {
-  try {
-    return await call('saveBitGoAddress', { username, walletAddress, bitgoAddress, label });
-  } catch (error) {
-    console.error('Error saving BitGo address:', error);
-    throw error;
-  }
-}
-
-/**
- * Get all BitGo addresses for a user
- */
-export async function getBitGoAddresses(username) {
-  try {
-    return (await call('getBitGoAddresses', { username })) || [];
-  } catch (error) {
-    console.error('Error getting BitGo addresses:', error);
     return [];
   }
 }

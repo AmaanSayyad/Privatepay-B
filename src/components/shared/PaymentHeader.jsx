@@ -5,7 +5,7 @@ import { useSetAtom } from "jotai";
 import { isCreateLinkDialogAtom } from "../../store/dialog-store.js";
 import { Icons } from "./Icons.jsx";
 import { useAppWallet } from "../../hooks/useAppWallet.js";
-import { APP_LOGO, BASE_LOGO, BITGO_LOGO } from "../../config.js";
+import { APP_LOGO, BASE_LOGO } from "../../config.js";
 import { useEnsProfile } from "../../hooks/useEnsProfile.js";
 import { Globe } from "lucide-react";
 

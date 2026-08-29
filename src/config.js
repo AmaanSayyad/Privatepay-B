@@ -4,28 +4,25 @@ import {
   BOTCHAIN_USDT_ADDRESS,
 } from "./botchain.js";
 
-// Branding Logos (Base, ENS, BitGo only)
+// Branding logos
 export const APP_LOGO = "/assets/private-pay-logo.svg"; // Private-Pay app logo
 export const BASE_LOGO = "/baselogo.png";
 export const ENS_LOGO = "/ethereum-name-service-ens-logo.png";
 export const USDC_LOGO = "/usd-coin-usdc-logo.png";
 export const ETH_LOGO = "/ethereum-eth-logo.png";
-export const BITGO_LOGO = "/bitgo.png";
 export const BOTCHAIN_LOGO = "/botchain.png";
 export const USDT_LOGO = "/usdt.png";
 export const PAYMENT_LINK_SUFFIX = ".privatepay.base";
 
-// Treasury addresses — from .env (Base, ENS, BitGo use shared treasury)
+// Treasury address — from .env
 const _sharedTreasury = typeof import.meta !== "undefined" && import.meta.env?.VITE_SHARED_TREASURY_ADDRESS?.trim();
 const _baseTreasury = typeof import.meta !== "undefined" && import.meta.env?.VITE_BASE_TREASURY_ADDRESS?.trim();
 const _ensTreasury = typeof import.meta !== "undefined" && import.meta.env?.VITE_ENS_TREASURY_ADDRESS?.trim();
-const _bitgoTreasury = typeof import.meta !== "undefined" && import.meta.env?.VITE_BITGO_TREASURY_ADDRESS?.trim();
 const _defaultTreasury = "0x71197e7a1CA5A2cb2AD82432B924F69B1E3dB123";
 
 export const SHARED_TREASURY_ADDRESS = _sharedTreasury || _baseTreasury || _defaultTreasury;
 export const BASE_TREASURY_ADDRESS = _baseTreasury || _sharedTreasury || _defaultTreasury;
 export const ENS_TREASURY_ADDRESS = _ensTreasury || _sharedTreasury || _defaultTreasury;
-export const BITGO_TREASURY_ADDRESS = _bitgoTreasury || _sharedTreasury || _defaultTreasury;
 
 // ---------------------------------------------------------------------------
 // BOT Chain — canonical chain config lives in ./botchain.js

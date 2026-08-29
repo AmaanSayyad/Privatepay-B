@@ -5,18 +5,16 @@ import { shortenId } from "../../utils/formatting-utils.js";
 import { Spinner } from "@nextui-org/react";
 import { useAppWallet } from "../../hooks/useAppWallet.js";
 import { getPaymentsByWallet, getUserByWallet } from "../../lib/supabase.js";
-import { USDC_LOGO, ETH_LOGO, BITGO_LOGO } from "../../config.js";
+import { USDC_LOGO, ETH_LOGO } from "../../config.js";
 
 function getTokenImg(currency) {
   const c = (currency || "").toUpperCase();
   if (c === "USDC") return USDC_LOGO;
-  if (c === "BITGO_TETH" || c === "BITGO") return BITGO_LOGO;
   return ETH_LOGO;
 }
 
 function getCurrencyLabel(currency) {
   const c = (currency || "ETH").toUpperCase();
-  if (c === "BITGO_TETH") return import.meta.env.VITE_BITGO_ASSET_SYMBOL || "tBaseETH";
   return c;
 }
 
