@@ -1,0 +1,11 @@
+{
+  "chainId": 968,
+  "network": "BOT Chain Testnet",
+  "privatePayTreasury": "0xfad9a3c0522bC933d6E284C446E75Dc9B45Bb079",
+  "deployer": "0x562d89c9709B5F51dDAcABafC8e0e7A074186428",
+  "relayer": "0x562d89c9709B5F51dDAcABafC8e0e7A074186428",
+  "txHash": "0xd95e4913ea114efa8f080a975c5df0fbc0ffe52989e09beeda3bc30c8995d300",
+  "gasUsed": "1460420",
+  "deployedAt": "2026-08-29T08:56:54.664Z",
+  "explorer": "https://scan.bohr.life/address/0xfad9a3c0522bC933d6E284C446E75Dc9B45Bb079"
+}

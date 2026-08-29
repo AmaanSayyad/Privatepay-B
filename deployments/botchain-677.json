@@ -1,0 +1,11 @@
+{
+  "chainId": 677,
+  "network": "BOT Chain",
+  "privatePayTreasury": "0x706b24fD623074d055963E77398E6112396490b2",
+  "deployer": "0x562d89c9709B5F51dDAcABafC8e0e7A074186428",
+  "relayer": "0x562d89c9709B5F51dDAcABafC8e0e7A074186428",
+  "txHash": "0x9724c274ab463d3f773e266193f534a8f4e4fb28c8b83e5bede7ecbad213a784",
+  "gasUsed": "1460420",
+  "deployedAt": "2026-08-29T08:58:42.667Z",
+  "explorer": "https://scan.botchain.ai/address/0x706b24fD623074d055963E77398E6112396490b2"
+}

@@ -1,64 +1,107 @@
 /**
- * Deploy PrivatePayTreasury on BOT Chain.
+ * Deploy PrivatePayTreasury to BOT Chain.
  *
- * Prerequisites (.env):
+ * Compile first (`npm run contract:compile`), then run this. It reads the
+ * Hardhat artifact and deploys with plain ethers — no hardhat-ethers plugin
+ * needed, which keeps the dependency list as-is.
+ *
+ * .env:
  *   DEPLOYER_PRIVATE_KEY  — funded BOT Chain key
- *   RELAYER_ADDRESS       — EOA allowed to call withdraw() (backend relayer)
+ *   RELAYER_ADDRESS       — EOA allowed to call withdraw() (defaults to the deployer)
  *
  * Usage:
- *   npm run contract:deploy:testnet   # chainId 968, dry run first
- *   npm run contract:deploy           # chainId 677, mainnet
+ *   npm run contract:deploy:testnet   # chainId 968
+ *   npm run contract:deploy           # chainId 677 (mainnet)
  *
- * Writes deployments/botchain-<chainId>.json and prints the env line to set.
+ * Writes deployments/botchain-<chainId>.json.
  */
+require('dotenv').config();
 
-const fs = require("node:fs");
-const path = require("node:path");
-const hre = require("hardhat");
+const fs = require('node:fs');
+const path = require('node:path');
+const { ethers } = require('ethers');
+
+const NETWORKS = {
+  mainnet: {
+    chainId: 677,
+    name: 'BOT Chain',
+    rpc: process.env.BOTCHAIN_RPC_URL || 'https://rpc.botchain.ai',
+    explorer: 'https://scan.botchain.ai',
+  },
+  testnet: {
+    chainId: 968,
+    name: 'BOT Chain Testnet',
+    rpc: process.env.BOTCHAIN_TESTNET_RPC_URL || 'https://rpc.bohr.life',
+    explorer: 'https://scan.bohr.life',
+  },
+};
+
+const root = path.resolve(__dirname, '..');
+const artifactPath = path.join(
+  root,
+  'artifacts/contracts/PrivatePayTreasury.sol/PrivatePayTreasury.json'
+);
 
 async function main() {
-  const relayerAddress = process.env.RELAYER_ADDRESS;
-  if (!relayerAddress || !relayerAddress.startsWith("0x")) {
-    console.error("Missing RELAYER_ADDRESS in .env (the EOA that will call withdraw).");
-    process.exit(1);
+  const netKey = (process.env.BOTCHAIN_NETWORK || 'mainnet').toLowerCase();
+  const net = NETWORKS[netKey];
+  if (!net) throw new Error(`Unknown BOTCHAIN_NETWORK "${netKey}" (use mainnet or testnet)`);
+
+  const key = process.env.DEPLOYER_PRIVATE_KEY;
+  if (!key) throw new Error('DEPLOYER_PRIVATE_KEY is not set in .env');
+
+  if (!fs.existsSync(artifactPath)) {
+    throw new Error(`Artifact not found at ${artifactPath} — run "npm run contract:compile" first`);
   }
+  const artifact = JSON.parse(fs.readFileSync(artifactPath, 'utf8'));
 
-  const net = await hre.ethers.provider.getNetwork();
-  const chainId = Number(net.chainId);
-  console.log(`Deploying PrivatePayTreasury to chainId ${chainId} with relayer ${relayerAddress}`);
+  const provider = new ethers.JsonRpcProvider(net.rpc, {
+    chainId: net.chainId,
+    name: net.name,
+  });
+  const wallet = new ethers.Wallet(key, provider);
+  const relayer = process.env.RELAYER_ADDRESS || wallet.address;
 
-  const Treasury = await hre.ethers.getContractFactory("PrivatePayTreasury");
-  const treasury = await Treasury.deploy(relayerAddress);
+  const balance = await provider.getBalance(wallet.address);
+  console.log(`Network   ${net.name} (${net.chainId})`);
+  console.log(`Deployer  ${wallet.address}`);
+  console.log(`Balance   ${ethers.formatEther(balance)} BOT`);
+  console.log(`Relayer   ${relayer}`);
 
-  // ethers v6 uses waitForDeployment/getAddress; v5 uses deployed()/address.
-  if (typeof treasury.waitForDeployment === "function") {
-    await treasury.waitForDeployment();
-  } else {
-    await treasury.deployed();
-  }
-  const address = typeof treasury.getAddress === "function" ? await treasury.getAddress() : treasury.address;
-  const txHash = treasury.deploymentTransaction?.()?.hash || treasury.deployTransaction?.hash || null;
+  if (balance === 0n) throw new Error('Deployer has no BOT to pay for gas');
 
-  const explorer = chainId === 677 ? "https://scan.botchain.ai" : "https://scan.bohr.life";
-  const outDir = path.resolve(__dirname, "..", "deployments");
+  const factory = new ethers.ContractFactory(artifact.abi, artifact.bytecode, wallet);
+  const treasury = await factory.deploy(relayer);
+  console.log(`Deploying… tx ${treasury.deploymentTransaction().hash}`);
+  await treasury.waitForDeployment();
+
+  const address = await treasury.getAddress();
+  const receipt = await treasury.deploymentTransaction().wait();
+
+  const outDir = path.join(root, 'deployments');
   fs.mkdirSync(outDir, { recursive: true });
   const out = {
-    chainId,
-    network: chainId === 677 ? "BOT Chain" : "BOT Chain Testnet",
+    chainId: net.chainId,
+    network: net.name,
     privatePayTreasury: address,
-    relayer: relayerAddress,
-    txHash,
+    deployer: wallet.address,
+    relayer,
+    txHash: receipt.hash,
+    gasUsed: receipt.gasUsed.toString(),
     deployedAt: new Date().toISOString(),
-    explorer: `${explorer}/address/${address}`,
+    explorer: `${net.explorer}/address/${address}`,
   };
-  fs.writeFileSync(path.join(outDir, `botchain-${chainId}.json`), JSON.stringify(out, null, 2) + "\n");
+  fs.writeFileSync(
+    path.join(outDir, `botchain-${net.chainId}.json`),
+    JSON.stringify(out, null, 2) + '\n'
+  );
 
-  console.log("PrivatePayTreasury deployed to:", address);
-  console.log("Explorer:", out.explorer);
-  console.log("");
-  console.log("Next steps:");
-  console.log(`1. Set VITE_SHARED_TREASURY_ADDRESS=${address} in .env`);
-  console.log("2. Ensure the backend relayer key matches RELAYER_ADDRESS so it can call withdraw(to, amount).");
+  console.log('');
+  console.log(`PrivatePayTreasury deployed to ${address}`);
+  console.log(`Gas used  ${receipt.gasUsed}`);
+  console.log(`Explorer  ${out.explorer}`);
+  console.log('');
+  console.log(`Set VITE_SHARED_TREASURY_ADDRESS=${address} in .env`);
 }
 
 main().catch((err) => {

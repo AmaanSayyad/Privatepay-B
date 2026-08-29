@@ -45,3 +45,5 @@ coverage.json
 
 # local migration plan (not committed)
 BOTCHAIN_MIGRATION.md
+artifacts/
+cache/

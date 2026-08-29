@@ -18,9 +18,9 @@
     "test": "vitest --run",
     "test:watch": "vitest",
     "contract:compile": "hardhat compile",
-    "contract:deploy": "hardhat run scripts/deploy-treasury.cjs --network botchain",
-    "contract:deploy:testnet": "hardhat run scripts/deploy-treasury.cjs --network botchainTestnet",
-    "db:check": "node scripts/check-db.mjs"
+    "contract:deploy": "node scripts/deploy-treasury.cjs",
+    "db:check": "node scripts/check-db.mjs",
+    "contract:e2e": "node scripts/e2e-treasury.mjs"
   },
   "dependencies": {
     "@arcium-hq/client": "^0.5.1",
