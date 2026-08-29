@@ -32,7 +32,7 @@ export function showNotification(title, options = {}) {
   return n;
 }
 
-/** Notify user when ETH/USDC payment is received (Base) */
+/** Notify user when BOT/USDT payment is received (Base) */
 
 export function notifyPaymentReceived(amount, fromAddress) {
   const shortFrom = fromAddress ? `${fromAddress.slice(0, 6)}...${fromAddress.slice(-4)}` : "sender";

@@ -6,9 +6,7 @@ import {
 
 // Branding logos
 export const APP_LOGO = "/assets/private-pay-logo.svg"; // Private-Pay app logo
-export const BASE_LOGO = "/baselogo.png";
-export const USDC_LOGO = "/usd-coin-usdc-logo.png";
-export const ETH_LOGO = "/ethereum-eth-logo.png";
+export const BASE_LOGO = "/botchain.png";
 export const BOTCHAIN_LOGO = "/botchain.png";
 export const USDT_LOGO = "/usdt.png";
 export const PAYMENT_LINK_SUFFIX = ".privatepay.base";

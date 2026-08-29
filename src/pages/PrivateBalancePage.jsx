@@ -1,7 +1,7 @@
 import TxItem from "../components/alias/TxItem.jsx";
 import { Icons } from "../components/shared/Icons.jsx";
 import { shortenAddress } from "../utils/string";
-import { BASE_LOGO, USDC_LOGO, ETH_LOGO } from "../config.js";
+import { BASE_LOGO, USDT_LOGO, BOTCHAIN_LOGO } from "../config.js";
 
 export default function PrivateBalancePage() {
   return (
@@ -40,7 +40,7 @@ function Transactions() {
 
         <div className="flex flex-col w-full">
           <TxItem
-            tokenImg={ETH_LOGO}
+            tokenImg={BOTCHAIN_LOGO}
             chainImg={BASE_LOGO}
             title={"alice.privatepay.base - Receive"}
             isNounsies
@@ -48,12 +48,12 @@ function Transactions() {
             subtitle={`from ${shortenAddress(
               "0x19065a8Ef7A782Bb3D9f3DEFef2FA0a4d1f34"
             )}`}
-            value={"0.05 ETH"}
+            value={"0.05 BOT"}
             subValue={"$150"}
           />
 
           <TxItem
-            tokenImg={USDC_LOGO}
+            tokenImg={USDT_LOGO}
             chainImg={BASE_LOGO}
             title={"bob.privatepay.base - Receive"}
             isNounsies
@@ -61,7 +61,7 @@ function Transactions() {
             subtitle={`from ${shortenAddress(
               "0x02234065a8Ef7A782Bb3D9f3DEFef2FA0a4d1f32"
             )}`}
-            value={"10.00 USDC"}
+            value={"10.00 USDT"}
             subValue={"$10"}
           />
         </div>

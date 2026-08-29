@@ -57,8 +57,8 @@ export default function OnRampDialog({
     >
       <ModalContent className="flex flex-col w-full h-full max-h-[70vh] p-6">
         <div className="flex flex-col gap-4 items-center justify-center text-center min-h-[200px]">
-          <p className="text-gray-700 font-medium">Get ETH on Base Sepolia</p>
-          <p className="text-sm text-gray-500">Use the faucet to receive testnet ETH for your wallet.</p>
+          <p className="text-gray-700 font-medium">Get BOT on BOT Chain</p>
+          <p className="text-sm text-gray-500">Use the faucet to receive testnet BOT for your wallet.</p>
           <a
             href="https://sepolia-faucet.pk910.de/"
             target="_blank"

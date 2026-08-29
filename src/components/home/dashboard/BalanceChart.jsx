@@ -16,20 +16,20 @@ import { safeGetJSON, safeSetJSON } from "../../../utils/localStorageUtils.js";
 const BALANCE_HISTORY_KEY = 'base_balance_history';
 
 
-function getBalanceHistory(account, currency = 'ETH') {
+function getBalanceHistory(account, currency = 'BOT') {
   if (!account) return [];
   const key = `${BALANCE_HISTORY_KEY}_${currency.toLowerCase()}_${account}`;
   return safeGetJSON(key, []);
 }
 
-function saveBalanceHistory(account, history, currency = 'ETH') {
+function saveBalanceHistory(account, history, currency = 'BOT') {
   if (!account) return;
   const key = `${BALANCE_HISTORY_KEY}_${currency.toLowerCase()}_${account}`;
   safeSetJSON(key, history);
 }
 
 // Update balance history with new balance
-function updateBalanceHistory(account, newBalance, currency = 'ETH') {
+function updateBalanceHistory(account, newBalance, currency = 'BOT') {
   if (!account || newBalance === undefined || newBalance === null) return [];
 
   const history = getBalanceHistory(account, currency);
@@ -69,7 +69,7 @@ function updateBalanceHistory(account, newBalance, currency = 'ETH') {
   return history;
 }
 
-function generateChartData(account, currentBalance, currency = 'ETH') {
+function generateChartData(account, currentBalance, currency = 'BOT') {
   let history = getBalanceHistory(account, currency);
   const today = new Date().toISOString().split('T')[0];
   const todayDate = new Date();
@@ -175,7 +175,7 @@ function generateChartData(account, currentBalance, currency = 'ETH') {
   return data;
 }
 
-export default function BalanceChart({ balance, currency = 'ETH' }) {
+export default function BalanceChart({ balance, currency = 'BOT' }) {
   const { account } = useAppWallet();
   const [chartData, setChartData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -294,7 +294,7 @@ const CustomTooltip = ({ active, payload, currency }) => {
         </div>
         <div className="flex items-baseline gap-2 mt-1">
           <p className="text-2xl font-bold text-gray-900">
-            {currency === 'USDC' ? balance.toFixed(2) : balance.toFixed(4)}
+            {currency === 'USDT' ? balance.toFixed(2) : balance.toFixed(4)}
           </p>
           <p className="text-sm font-semibold text-indigo-600">{currency}</p>
         </div>

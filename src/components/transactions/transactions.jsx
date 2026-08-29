@@ -5,16 +5,16 @@ import { shortenId } from "../../utils/formatting-utils.js";
 import { Spinner } from "@nextui-org/react";
 import { useAppWallet } from "../../hooks/useAppWallet.js";
 import { getPaymentsByWallet, getUserByWallet } from "../../lib/supabase.js";
-import { USDC_LOGO, ETH_LOGO } from "../../config.js";
+import { USDT_LOGO, BOTCHAIN_LOGO } from "../../config.js";
 
 function getTokenImg(currency) {
   const c = (currency || "").toUpperCase();
-  if (c === "USDC") return USDC_LOGO;
-  return ETH_LOGO;
+  if (c === "USDT") return USDT_LOGO;
+  return BOTCHAIN_LOGO;
 }
 
 function getCurrencyLabel(currency) {
-  const c = (currency || "ETH").toUpperCase();
+  const c = (currency || "BOT").toUpperCase();
   return c;
 }
 
@@ -90,9 +90,9 @@ export default function Transactions() {
 
                 let title, subtitle, value;
 
-                const currency = tx.currency || tx.metadata?.currency || "ETH";
+                const currency = tx.currency || tx.metadata?.currency || "BOT";
                 const currencyLabel = getCurrencyLabel(currency);
-                const decimals = currency === "USDC" ? 2 : 4;
+                const decimals = currency === "USDT" ? 2 : 4;
 
                 if (isWithdrawal) {
                   title = "Withdrawal";
@@ -127,7 +127,7 @@ export default function Transactions() {
         <div className="w-full flex flex-col items-center justify-center min-h-64 gap-2">
           <p className="text-gray-600">No transactions found</p>
           <p className="text-sm text-gray-400">
-            Transactions will appear here when you receive or send ETH/USDC
+            Transactions will appear here when you receive or send BOT/USDT
           </p>
         </div>
       )}

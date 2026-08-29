@@ -7,7 +7,7 @@ import { Button, Skeleton } from "@nextui-org/react";
 import { isCreateLinkDialogAtom } from "../../../store/dialog-store.js";
 import { getPaymentLinks, getUserBalance } from "../../../lib/supabase.js";
 import { Icons } from "../../shared/Icons.jsx";
-import { BASE_LOGO, USDC_LOGO } from "../../../config.js";
+import { BASE_LOGO, USDT_LOGO } from "../../../config.js";
 import { useAppWallet } from "../../../hooks/useAppWallet.js";
 import { useState, useEffect } from "react";
 import toast from "react-hot-toast";
@@ -191,7 +191,7 @@ export default function PaymentLinksDashboard({ user }) {
                         </button>
                         <div className="flex flex-col items-end">
                           <span className="text-xs font-bold flex items-center gap-1">
-                            {balances.eth_balance.toFixed(4)} ETH
+                            {balances.eth_balance.toFixed(4)} BOT
                           </span>
                           <span className="text-[10px] opacity-80 flex items-center gap-1">
                             {balances.usdc_balance.toFixed(2)} USDC

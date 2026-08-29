@@ -1,6 +1,6 @@
 /**
  * Base hub — EVM-only.
- * Send ETH/USDC on Base Sepolia via the Send page.
+ * Send BOT/USDT on Base Sepolia via the Send page.
  */
 
 import React from "react";
@@ -51,7 +51,7 @@ export default function BasePage() {
               <div className="text-center space-y-2">
                 <h3 className="font-bold text-2xl text-gray-900">Connect Wallet</h3>
                 <p className="text-gray-500 text-sm max-w-[280px] leading-relaxed mx-auto">
-                  Connect your wallet to send ETH/USDC and use Private-Pay on Base.
+                  Connect your wallet to send BOT/USDT and use Private-Pay on Base.
                 </p>
               </div>
               <button
@@ -85,7 +85,7 @@ export default function BasePage() {
               <div className="space-y-2">
                 <div className="flex items-center justify-between p-3 bg-gray-50 rounded-2xl">
                   <span className="text-sm text-gray-700">Native token</span>
-                  <span className="font-semibold text-gray-900">ETH</span>
+                  <span className="font-semibold text-gray-900">BOT</span>
                 </div>
                 <div className="flex items-center justify-between p-3 bg-gray-50 rounded-2xl">
                   <span className="text-sm text-gray-700">Explorer</span>
@@ -110,12 +110,12 @@ export default function BasePage() {
                 </div>
                 <div>
                   <h3 className="font-bold text-lg text-gray-900">Send & Withdraw</h3>
-                  <p className="text-xs text-gray-500">Transfer ETH/USDC or withdraw from treasury</p>
+                  <p className="text-xs text-gray-500">Transfer BOT/USDT or withdraw from treasury</p>
                 </div>
               </div>
               <div className="space-y-2">
                 <div className="flex items-center justify-between p-3 bg-gray-50 rounded-2xl">
-                  <span className="text-sm text-gray-700">Send ETH & USDC privately</span>
+                  <span className="text-sm text-gray-700">Send BOT & USDT privately</span>
                   <CheckCircle size={16} className="text-primary shrink-0" />
                 </div>
                 <div className="flex items-center justify-between p-3 bg-gray-50 rounded-2xl">

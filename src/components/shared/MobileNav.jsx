@@ -37,12 +37,6 @@ export function MobileNav() {
             icon: <Send className="w-5 h-5" />,
             path: '/send',
         },
-        {
-            id: 'ens',
-            label: 'ENS',
-            icon: <Globe className="w-5 h-5" />,
-            path: '/send#ens',
-        },
         // {
         //     id: 'settings',
         //     label: 'Settings',
@@ -53,7 +47,6 @@ export function MobileNav() {
     
     const isActive = (path) => {
         if (path === '/') return location.pathname === '/';
-        if (path === '/send#ens') return location.pathname === '/send' && location.hash === '#ens';
         if (path.includes('#')) return location.pathname === path.split('#')[0] && location.hash === '#' + path.split('#')[1];
         return location.pathname.startsWith(path);
     };

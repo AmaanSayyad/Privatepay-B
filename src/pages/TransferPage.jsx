@@ -11,7 +11,7 @@ export default function TransferPage() {
         <div className="max-w-md w-full flex flex-col gap-6 rounded-3xl bg-white p-8 shadow-lg border border-gray-200">
           <h1 className="font-bold text-xl text-center">Transfer</h1>
           <p className="text-neutral-600 text-center text-sm">
-            Send ETH or withdraw from your balance on Base Sepolia.
+            Send BOT or withdraw from your balance on BOT Chain.
           </p>
           <Link
             to="/send"
@@ -30,7 +30,7 @@ export default function TransferPage() {
       <div className="max-w-md w-full flex flex-col gap-6 rounded-3xl bg-white p-8 shadow-lg border border-gray-200">
         <h1 className="font-bold text-xl text-center">Transfer</h1>
         <p className="text-neutral-600 text-center text-sm">
-          Connect your wallet to send ETH and manage withdrawals on Base.
+          Connect your wallet to send BOT and manage withdrawals on BOT Chain.
         </p>
         <Link
           to="/base"

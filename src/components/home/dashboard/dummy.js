@@ -9,7 +9,7 @@ export const ASSETS_DUMMY = {
       {
         "chainId": BASE_CHAIN_ID,
         "balance": 0.17,
-        "nativeToken": "ETH",
+        "nativeToken": "BOT",
         "logo": BASE_LOGO
       }
     ],
@@ -19,8 +19,8 @@ export const ASSETS_DUMMY = {
         "address": "0x036CbD53842c5426634e7929541eC2318f3dCF7e",
         "balance": 350,
         "logo": "https://cryptologos.cc/logos/usd-coin-usdc-logo.png",
-        "name": "USDC",
-        "symbol": "USDC",
+        "name": "USDT",
+        "symbol": "USDT",
         "decimals": 6
       }
     ]
@@ -36,7 +36,7 @@ export const ASSETS_DUMMY = {
         {
           "chainId": BASE_CHAIN_ID,
           "balance": 0.02,
-          "nativeToken": "ETH",
+          "nativeToken": "BOT",
           "logo": BASE_LOGO
         }
       ],
@@ -52,7 +52,7 @@ export const ASSETS_DUMMY = {
         {
           "chainId": BASE_CHAIN_ID,
           "balance": 0.05,
-          "nativeToken": "ETH",
+          "nativeToken": "BOT",
           "logo": BASE_LOGO
         }
       ],
@@ -62,8 +62,8 @@ export const ASSETS_DUMMY = {
           "address": "0x036CbD53842c5426634e7929541eC2318f3dCF7e",
           "balance": 150,
           "logo": "https://cryptologos.cc/logos/usd-coin-usdc-logo.png",
-          "name": "USDC",
-          "symbol": "USDC",
+          "name": "USDT",
+          "symbol": "USDT",
           "decimals": 6
         }
       ]
@@ -78,7 +78,7 @@ export const ASSETS_DUMMY = {
         {
           "chainId": BASE_CHAIN_ID,
           "balance": 0.1,
-          "nativeToken": "ETH",
+          "nativeToken": "BOT",
           "logo": BASE_LOGO
         }
       ],
@@ -88,8 +88,8 @@ export const ASSETS_DUMMY = {
           "address": "0x036CbD53842c5426634e7929541eC2318f3dCF7e",
           "balance": 50,
           "logo": "https://cryptologos.cc/logos/usd-coin-usdc-logo.png",
-          "name": "USDC",
-          "symbol": "USDC",
+          "name": "USDT",
+          "symbol": "USDT",
           "decimals": 6
         }
       ]

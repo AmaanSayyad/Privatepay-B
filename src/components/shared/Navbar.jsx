@@ -41,16 +41,6 @@ export default function Navbar() {
           <span>Transactions</span>
         </Link>
 
-        <Link
-          to={"/send#ens"}
-          className={cnm(
-            "px-3 py-2 rounded-full flex items-center gap-1.5 transition-all duration-300 whitespace-nowrap",
-            location.pathname === "/send" && location.hash === "#ens" ? "bg-primary text-white" : ""
-          )}
-        >
-          <Globe className="size-3.5" />
-          <span>ENS Hub</span>
-        </Link>
 
         
 

@@ -1,6 +1,6 @@
 /**
  * Send & Withdraw page - Updated for Base (EVM).
- * - Send: Transfer ETH/USDC from your wallet to any address (e.g. treasury).
+ * - Send: Transfer BOT/USDT from your wallet to any address (e.g. treasury).
  * - Withdraw: Withdraw your credited balance from the treasury to your wallet.
  */
 
@@ -11,7 +11,7 @@ import { Send, ArrowDownToLine, ExternalLink, CheckCircle2, AlertCircle, Globe, 
 import toast from 'react-hot-toast';
 import { ethers } from 'ethers';
 import { useEnsName } from 'wagmi';
-import { BASE_LOGO, USDC_LOGO, ETH_LOGO, USDC_ADDRESS, BASE_TREASURY_ADDRESS, baseSepolia } from '../config.js';
+import { BASE_LOGO, USDT_LOGO, BOTCHAIN_LOGO, USDC_ADDRESS, BASE_TREASURY_ADDRESS, baseSepolia } from '../config.js';
 
 const USDC_ABI = [
   "function transfer(address to, uint256 amount) public returns (bool)",
@@ -79,7 +79,7 @@ function SendTab() {
   const { account, isConnected, connect, signer } = useAppWallet();
   const [recipient, setRecipient] = useState('');
   const [amount, setAmount] = useState('0.1');
-  const [currency, setCurrency] = useState('ETH'); // 'ETH' or 'USDC'
+  const [currency, setCurrency] = useState('BOT'); // 'BOT' or 'USDT'
   const [transferLoading, setTransferLoading] = useState(false);
   const [lastTx, setLastTx] = useState(null);
 
@@ -101,8 +101,7 @@ function SendTab() {
 
     // Alıcı kullanıcı adı / alias'ını çöz
     const rawRecipient = recipient.trim();
-    const alias = rawRecipient.replace(/\.privatepay\.base$/i, '').replace(/\.privatepay$/i, '').replace(/\.eth$/i, '').toLowerCase().trim();
-    const isEnsInput = rawRecipient.toLowerCase().endsWith('.eth');
+    const alias = rawRecipient.replace(/\.privatepay\.base$/i, '').replace(/\.privatepay$/i, '').toLowerCase().trim();
 
     let recipientUsername = null;    // Supabase'de balance yazılacak username
     let recipientWalletAddress = null; // Supabase users/payment_links kayıtlı cüzdan (bilgi amaçlı)
@@ -168,15 +167,15 @@ function SendTab() {
       toast.loading('Submitting transaction...', { id: 'tx-loading' });
 
       let tx;
-      if (currency === 'ETH') {
+      if (currency === 'BOT') {
         tx = await signer.sendTransaction({
           to: treasuryAddress,
           value: ethers.parseEther(amount.toString()),
         });
       } else {
-        // USDC Transfer
+        // USDT transfer
         const usdcContract = new ethers.Contract(USDC_ADDRESS, USDC_ABI, signer);
-        const decimals = 6; // USDC on Base Sepolia usually has 6
+        const decimals = 6; // USDT on BOT Chain
         const amountWei = ethers.parseUnits(amount.toString(), decimals);
         tx = await usdcContract.transfer(treasuryAddress, amountWei);
       }
@@ -242,7 +241,7 @@ function SendTab() {
           </div>
           <div className="text-center space-y-2">
             <h3 className="text-xl font-bold text-gray-900">Connect wallet to send</h3>
-            <p className="text-gray-500 text-sm">Connect your wallet to send private ETH transfers.</p>
+            <p className="text-gray-500 text-sm">Connect your wallet to send private BOT transfers.</p>
           </div>
           <Button onClick={connect} className="w-full bg-primary hover:bg-primary-800 text-white font-bold h-12 rounded-2xl">
             Connect Wallet
@@ -267,18 +266,18 @@ function SendTab() {
 
         <div className="flex gap-2 mb-4 p-1 bg-gray-100 rounded-2xl">
           <button
-            onClick={() => setCurrency('ETH')}
-            className={`flex-1 py-2 rounded-xl text-sm font-bold transition-all flex items-center justify-center gap-2 ${currency === 'ETH' ? 'bg-white shadow text-primary' : 'text-gray-500 hover:text-gray-700'}`}
+            onClick={() => setCurrency('BOT')}
+            className={`flex-1 py-2 rounded-xl text-sm font-bold transition-all flex items-center justify-center gap-2 ${currency === 'BOT' ? 'bg-white shadow text-primary' : 'text-gray-500 hover:text-gray-700'}`}
           >
-            <img src={ETH_LOGO} className="size-4" alt="ETH" />
-            ETH
+            <img src={BOTCHAIN_LOGO} className="size-4" alt="BOT" />
+            BOT
           </button>
           <button
-            onClick={() => setCurrency('USDC')}
-            className={`flex-1 py-2 rounded-xl text-sm font-bold transition-all flex items-center justify-center gap-2 ${currency === 'USDC' ? 'bg-white shadow text-primary' : 'text-gray-500 hover:text-gray-700'}`}
+            onClick={() => setCurrency('USDT')}
+            className={`flex-1 py-2 rounded-xl text-sm font-bold transition-all flex items-center justify-center gap-2 ${currency === 'USDT' ? 'bg-white shadow text-primary' : 'text-gray-500 hover:text-gray-700'}`}
           >
-            <img src={USDC_LOGO} className="size-4" alt="USDC" />
-            USDC
+            <img src={USDT_LOGO} className="size-4" alt="USDT" />
+            USDT
           </button>
         </div>
 
@@ -340,13 +339,13 @@ function WithdrawTab() {
   const [username, setUsername] = useState('');
   const [ethBalance, setEthBalance] = useState(0);
   const [usdcBalance, setUsdcBalance] = useState(0);
-  const [currency, setCurrency] = useState('ETH');
+  const [currency, setCurrency] = useState('BOT');
   const [amount, setAmount] = useState('');
   const [destination, setDestination] = useState('');
   const [loading, setLoading] = useState(false);
   const [loadingBalance, setLoadingBalance] = useState(true);
 
-  const balance = currency === 'USDC' ? usdcBalance : ethBalance;
+  const balance = currency === 'USDT' ? usdcBalance : ethBalance;
 
   useEffect(() => {
     if (!account) {
@@ -455,25 +454,25 @@ function WithdrawTab() {
       const treasuryWallet = new ethers.Wallet(pKey, rpcProvider);
 
       let tx;
-      if (currency === 'ETH') {
+      if (currency === 'BOT') {
         // Native withdrawal
         const tBalance = await rpcProvider.getBalance(treasuryWallet.address);
         if (tBalance < ethers.parseEther(amount.toString())) {
-          throw new Error('Treasury ETH balance too low');
+          throw new Error('Treasury BOT balance too low');
         }
         tx = await treasuryWallet.sendTransaction({
           to: finalDestination,
           value: ethers.parseEther(amount.toString()),
         });
       } else {
-        // USDC withdrawal
+        // USDT withdrawal
         const usdcContract = new ethers.Contract(USDC_ADDRESS, USDC_ABI, treasuryWallet);
         const decimals = 6;
         const amountWei = ethers.parseUnits(amount.toString(), decimals);
 
         const tBalance = await usdcContract.balanceOf(treasuryWallet.address);
         if (tBalance < amountWei) {
-          throw new Error('Treasury USDC balance too low');
+          throw new Error('Treasury USDT balance too low');
         }
         tx = await usdcContract.transfer(finalDestination, amountWei);
       }
@@ -496,7 +495,7 @@ function WithdrawTab() {
       );
 
       setAmount('');
-      if (currency === 'ETH') {
+      if (currency === 'BOT') {
         setEthBalance((b) => Math.max(0, b - amt));
       } else {
         setUsdcBalance((b) => Math.max(0, b - amt));
@@ -550,33 +549,33 @@ function WithdrawTab() {
 
         <div className="flex gap-2 mb-4 p-1 bg-gray-100 rounded-2xl">
           <button
-            onClick={() => setCurrency('ETH')}
-            className={`flex-1 py-2 rounded-xl text-sm font-bold transition-all flex items-center justify-center gap-2 ${currency === 'ETH' ? 'bg-white shadow text-primary' : 'text-gray-500 hover:text-gray-700'}`}
+            onClick={() => setCurrency('BOT')}
+            className={`flex-1 py-2 rounded-xl text-sm font-bold transition-all flex items-center justify-center gap-2 ${currency === 'BOT' ? 'bg-white shadow text-primary' : 'text-gray-500 hover:text-gray-700'}`}
           >
-            <img src={ETH_LOGO} alt="ETH" className="size-5 rounded-full object-contain shrink-0" />
-            ETH
+            <img src={BOTCHAIN_LOGO} alt="BOT" className="size-5 rounded-full object-contain shrink-0" />
+            BOT
           </button>
           <button
-            onClick={() => setCurrency('USDC')}
-            className={`flex-1 py-2 rounded-xl text-sm font-bold transition-all flex items-center justify-center gap-2 ${currency === 'USDC' ? 'bg-white shadow text-primary' : 'text-gray-500 hover:text-gray-700'}`}
+            onClick={() => setCurrency('USDT')}
+            className={`flex-1 py-2 rounded-xl text-sm font-bold transition-all flex items-center justify-center gap-2 ${currency === 'USDT' ? 'bg-white shadow text-primary' : 'text-gray-500 hover:text-gray-700'}`}
           >
-            <img src={USDC_LOGO} alt="USDC" className="size-5 rounded-full object-contain shrink-0" />
-            USDC
+            <img src={USDT_LOGO} alt="USDT" className="size-5 rounded-full object-contain shrink-0" />
+            USDT
           </button>
         </div>
 
         <div className="mb-4 p-4 rounded-2xl bg-primary-50 border border-primary-100">
-          <p className="text-xs text-primary-700 font-medium">Your credited {currency === 'ETH' ? 'ETH' : 'USDC'} balance</p>
+          <p className="text-xs text-primary-700 font-medium">Your credited {currency === 'BOT' ? 'BOT' : 'USDT'} balance</p>
           {loadingBalance ? (
             <p className="text-xl font-bold text-primary-900">...</p>
           ) : (
-            <p className="text-xl font-bold text-primary-900">{balance.toFixed(currency === 'USDC' ? 2 : 4)} {currency === 'ETH' ? 'ETH' : 'USDC'}</p>
+            <p className="text-xl font-bold text-primary-900">{balance.toFixed(currency === 'USDT' ? 2 : 4)} {currency === 'BOT' ? 'BOT' : 'USDT'}</p>
           )}
         </div>
 
         <div className="space-y-4">
           <div>
-            <label className="text-sm font-medium text-gray-700 mb-1.5 block">Amount ({currency === 'ETH' ? 'ETH' : 'USDC'})</label>
+            <label className="text-sm font-medium text-gray-700 mb-1.5 block">Amount ({currency === 'BOT' ? 'BOT' : 'USDT'})</label>
             <div className="flex gap-2">
               <input
                 type="number"

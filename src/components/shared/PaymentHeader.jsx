@@ -51,8 +51,6 @@ export default function PaymentHeader() {
 
 const UserProfileButton = () => {
   const { account, connect } = useAppWallet();
-  const ensName = null;
-  const ensAvatar = null;
 
   return (
     <div className={"flex flex-col relative"}>
@@ -60,17 +58,8 @@ const UserProfileButton = () => {
         onClick={connect}
         className="size-12 rounded-full overflow-hidden relative border-[4px] border-primary flex items-center justify-center bg-gray-100"
       >
-        {account && ensAvatar ? (
-          <img src={ensAvatar} alt={ensName || "Profile"} className="w-full h-full object-cover" />
-        ) : (
-          <img src={APP_LOGO} alt="Private-Pay" className="w-7 h-7 object-contain" />
-        )}
+        <img src={APP_LOGO} alt="Private-Pay" className="w-7 h-7 object-contain" />
       </button>
-      {ensName && (
-        <div className="absolute -bottom-1 -right-1 bg-primary rounded-full p-1 border-2 border-white shadow-sm">
-          <Globe className="size-2 text-white" />
-        </div>
-      )}
     </div>
   );
 };

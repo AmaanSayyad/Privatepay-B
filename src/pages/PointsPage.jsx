@@ -159,7 +159,7 @@ export default function PointsPage() {
               <Spinner color="primary" />
             </div>
           ) : pointsHistory.length === 0 ? (
-            <p className="text-gray-500 text-center py-8">No points history yet. Send or receive ETH/USDC and create payment links to earn points.</p>
+            <p className="text-gray-500 text-center py-8">No points history yet. Send or receive BOT/USDT and create payment links to earn points.</p>
           ) : (
             <Table aria-label="Points history" classNames={{ wrapper: "rounded-2xl" }}>
               <TableHeader>
@@ -202,7 +202,7 @@ export default function PointsPage() {
                   first_payment: 'Bonus points for your first payment sent',
                   first_received: 'Bonus points for your first payment received',
                   payment_link_created: 'Points awarded for creating a new payment link',
-                  payment_sent: 'Points awarded for every ETH payment sent',
+                  payment_sent: 'Points awarded for every BOT payment sent',
                   payment_received: 'Points awarded for every payment received',
                 };
                 const ACTION_SUBTITLES = {

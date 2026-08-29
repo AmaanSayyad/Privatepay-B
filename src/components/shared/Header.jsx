@@ -7,7 +7,7 @@ import { useAppWallet } from "../../hooks/useAppWallet.js";
 import { useModal } from "connectkit";
 import { useState } from "react";
 import toast from "react-hot-toast";
-import { APP_LOGO, BASE_LOGO, baseSepolia } from "../../config.js";
+import { APP_LOGO, BASE_LOGO, BOT_CHAIN_NAME, baseSepolia } from "../../config.js";
 import { Globe } from "lucide-react";
 
 export default function Header() {
@@ -43,8 +43,6 @@ export default function Header() {
 
 const UserProfileButton = () => {
   const { account, isConnected, connect, disconnect } = useAppWallet();
-  const ensName = null;
-  const ensAvatar = null;
   const { setOpen } = useModal();
   const [showMenu, setShowMenu] = useState(false);
 
@@ -84,16 +82,7 @@ const UserProfileButton = () => {
         onClick={() => setShowMenu(!showMenu)}
         className="size-12 rounded-full overflow-hidden relative border-2 border-primary/30 bg-primary-50 flex items-center justify-center p-0.5"
       >
-        {ensAvatar ? (
-          <img src={ensAvatar} alt="ENS Avatar" className="w-full h-full object-cover rounded-full" />
-        ) : (
-          <img src="/assets/nouns.png" alt="Wallet" className="w-full h-full object-contain" />
-        )}
-        {ensName && (
-           <div className="absolute bottom-0 right-0 bg-primary rounded-full p-0.5 border border-white">
-              <Globe className="size-2 text-white" />
-           </div>
-        )}
+        <img src="/assets/nouns.png" alt="Wallet" className="w-full h-full object-contain" />
       </button>
 
       {showMenu && (
@@ -106,22 +95,13 @@ const UserProfileButton = () => {
             <div className="flex flex-col gap-3">
               <div className="flex items-center gap-3 pb-3 border-b border-neutral-200">
                 <div className="size-10 rounded-full overflow-hidden border-2 border-primary flex-shrink-0 bg-primary-50 flex items-center justify-center p-0.5">
-                  {ensAvatar ? (
-                    <img src={ensAvatar} alt="ENS Avatar" className="w-full h-full object-cover rounded-full" />
-                  ) : (
-                    <img src="/assets/nouns.png" alt="Wallet" className="w-full h-full object-contain" />
-                  )}
+                  <img src="/assets/nouns.png" alt="Wallet" className="w-full h-full object-contain" />
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-bold text-gray-800 truncate">
-                    {ensName || `${account?.slice(0, 6)}...${account?.slice(-4)}`}
+                    {`${account?.slice(0, 6)}...${account?.slice(-4)}`}
                   </p>
-                  {ensName && (
-                    <p className="text-[10px] text-primary font-medium truncate italic mt-0.5">
-                      {account?.slice(0, 10)}... ENS Linked
-                    </p>
-                  )}
-                  <p className="text-[10px] text-gray-500">Base Sepolia</p>
+                  <p className="text-[10px] text-gray-500">{BOT_CHAIN_NAME}</p>
                 </div>
               </div>
 

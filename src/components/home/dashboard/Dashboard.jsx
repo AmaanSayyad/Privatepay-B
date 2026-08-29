@@ -20,7 +20,7 @@ export default function Dashboard() {
   const [openQr, setOpenQr] = useState(false);
   const { account } = useAppWallet();
   const [balance, setBalance] = useState({ bot: 0, usdt: 0 });
-  const [selectedCurrency, setSelectedCurrency] = useState("ETH");
+  const [selectedCurrency, setSelectedCurrency] = useState("BOT");
   const [isLoadingBalance, setIsLoadingBalance] = useState(true);
   const previousBalanceRef = useRef({ bot: 0, usdt: 0 });
 
@@ -42,12 +42,12 @@ export default function Dashboard() {
         setBalance({ bot: ethBal, usdt: usdcBal });
         setIsLoadingBalance(false);
 
-        if (previousBalanceRef.current.eth > 0 && ethBal > previousBalanceRef.current.eth) {
-          const received = (ethBal - previousBalanceRef.current.eth).toFixed(4);
+        if (previousBalanceRef.current.bot > 0 && ethBal > previousBalanceRef.current.bot) {
+          const received = (ethBal - previousBalanceRef.current.bot).toFixed(4);
           const hasPermission = await requestNotificationPermission();
-          if (hasPermission) notifyPaymentReceived(`${received} ETH`, null);
+          if (hasPermission) notifyPaymentReceived(`${received} BOT`, null);
         }
-        previousBalanceRef.current = { eth: ethBal, usdc: usdcBal };
+        previousBalanceRef.current = { bot: ethBal, usdt: usdcBal };
       } else {
         setBalance({ bot: 0, usdt: 0 });
         setIsLoadingBalance(false);
@@ -92,7 +92,6 @@ function ReceiveCard({ setOpenQr, user, isLoading }) {
   const [mode, setMode] = useState("username");
   const [username, setUsername] = useState("");
   const [isEditingUsername, setIsEditingUsername] = useState(false);
-  const ensName = null;
 
   // Load username from localStorage
   useEffect(() => {
@@ -226,26 +225,10 @@ function ReceiveCard({ setOpenQr, user, isLoading }) {
                <p className="text-sm">
                  {account?.slice(0, 10)}...{account?.slice(-8)}
                </p>
-               {ensName && (
-                  <Chip variant="flat" color="primary" size="sm" startContent={<Globe size={10} />} className="h-6 text-[10px] font-bold">
-                    ENS
-                  </Chip>
-               )}
             </div>
           ) : (
             <div className="flex items-center gap-2">
                <p className="text-sm">{username}{PAYMENT_LINK_SUFFIX}</p>
-               {ensName && (
-                  <button 
-                    onClick={() => {
-                        toast.success(`Verified ENS: ${ensName}`);
-                    }}
-                    className="flex items-center gap-1 bg-primary/10 text-primary px-2 py-0.5 rounded-full text-[10px] font-bold border border-primary/20"
-                  >
-                    <Globe className="size-3" />
-                    VERIFIED
-                  </button>
-               )}
             </div>
           )}
           <div className="flex items-center gap-2">

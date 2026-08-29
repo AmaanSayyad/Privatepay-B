@@ -5,7 +5,7 @@ import { useLoaderData, useParams } from "react-router-dom";
 import { useAppWallet } from "../../hooks/useAppWallet.js";
 import { getPaymentLinkByAlias, getUserByUsername, recordPayment } from "../../lib/supabase.js";
 import { ethers } from "ethers";
-import { BASE_LOGO, ETH_LOGO, USDC_LOGO, USDC_ADDRESS, baseSepolia, BASE_TREASURY_ADDRESS } from "../../config.js";
+import { BASE_LOGO, BOTCHAIN_LOGO, USDT_LOGO, USDC_ADDRESS, baseSepolia, BASE_TREASURY_ADDRESS } from "../../config.js";
 
 const USDC_ABI = [
   "function transfer(address to, uint256 amount) public returns (bool)",
@@ -28,7 +28,7 @@ export default function Payment() {
   const [paymentLinkData, setPaymentLinkData] = useState(null);
   const [recipientData, setRecipientData] = useState(null);
   const [amount, setAmount] = useState("");
-  const [currency, setCurrency] = useState("ETH");
+  const [currency, setCurrency] = useState("BOT");
   const [openSuccess, setOpenSuccess] = useState(false);
   const [successData, setSuccessData] = useState(null);
   const [error, setError] = useState(null);
@@ -96,7 +96,7 @@ export default function Payment() {
       if (!treasuryAddress) throw new Error("Treasury address not configured");
 
       let tx;
-      if (currency === 'ETH') {
+      if (currency === 'BOT') {
         tx = await signer.sendTransaction({
           to: treasuryAddress,
           value: ethers.parseEther(amount.toString()),
@@ -152,7 +152,7 @@ export default function Payment() {
         token: {
           nativeToken: {
             symbol: currency,
-            logo: currency === 'USDC' ? USDC_LOGO : ETH_LOGO,
+            logo: currency === 'USDT' ? USDT_LOGO : BOTCHAIN_LOGO,
           },
         },
         destinationAddress: `${alias}.privatepay.base`,
@@ -260,18 +260,18 @@ export default function Payment() {
                   </div>
                   <div className="flex gap-2 mb-2 p-1 bg-gray-100 rounded-2xl w-full">
                     <button
-                      onClick={() => setCurrency('ETH')}
-                      className={`flex-1 py-2 rounded-xl text-sm font-bold transition-all flex items-center justify-center gap-2 ${currency === 'ETH' ? 'bg-white shadow text-primary' : 'text-gray-500 hover:text-gray-700'}`}
+                      onClick={() => setCurrency('BOT')}
+                      className={`flex-1 py-2 rounded-xl text-sm font-bold transition-all flex items-center justify-center gap-2 ${currency === 'BOT' ? 'bg-white shadow text-primary' : 'text-gray-500 hover:text-gray-700'}`}
                     >
-                      <img src={ETH_LOGO} alt="" className="size-5 rounded-full object-contain shrink-0" />
-                      ETH
+                      <img src={BOTCHAIN_LOGO} alt="" className="size-5 rounded-full object-contain shrink-0" />
+                      BOT
                     </button>
                     <button
-                      onClick={() => setCurrency('USDC')}
-                      className={`flex-1 py-2 rounded-xl text-sm font-bold transition-all flex items-center justify-center gap-2 ${currency === 'USDC' ? 'bg-white shadow text-primary' : 'text-gray-500 hover:text-gray-700'}`}
+                      onClick={() => setCurrency('USDT')}
+                      className={`flex-1 py-2 rounded-xl text-sm font-bold transition-all flex items-center justify-center gap-2 ${currency === 'USDT' ? 'bg-white shadow text-primary' : 'text-gray-500 hover:text-gray-700'}`}
                     >
-                      <img src={USDC_LOGO} alt="" className="size-5 rounded-full object-contain shrink-0" />
-                      USDC
+                      <img src={USDT_LOGO} alt="" className="size-5 rounded-full object-contain shrink-0" />
+                      USDT
                     </button>
                   </div>
 
