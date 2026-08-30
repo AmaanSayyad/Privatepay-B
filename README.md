@@ -1,502 +1,212 @@
-# PrivatePay 🐙
+# PrivatePay on BOT Chain
 
-> The first untraceable, unidentifiable, private payments on blockchain.
-Powered by Elliptic Curve Diffie-Hellman (ECDH) + secp256k1 + BIP 0352 / EIP 5564 + ROFL DarkPool Mixer
-
-Simply means “Stealth Crypto Payments using multilayer forks”
+Untraceable private payments on **BOT Chain** only. Stealth payment links, a shared treasury, and a relayer-backed withdraw path — no Base, ENS, or BitGo.
 
 | | Link |
 |---|------|
 | **Pitch deck** | [Private-Pay (Google Slides)](https://docs.google.com/presentation/d/1i_ZRVzjbjkXesqM678vyouuYk2o7o2z_gGqPZtqmkkE/edit?usp=sharing) |
 | **GitHub** | [AmaanSayyad/Private-Pay-](https://github.com/AmaanSayyad/Private-Pay-) |
-| **Live link** | [https://private-pay-iqgp.vercel.app/](https://private-pay-iqgp.vercel.app/) | 
-| **Treasury (Base Sepolia)** | [`0x71197e7a1CA5A2cb2AD82432B924F69B1E3dB123`](https://sepolia.basescan.org/address/0x71197e7a1CA5A2cb2AD82432B924F69B1E3dB123) — [View on BaseScan](https://sepolia.basescan.org/address/0x71197e7a1CA5A2cb2AD82432B924F69B1E3dB123) |
+| **Live app** | [https://private-pay-iqgp.vercel.app/](https://private-pay-iqgp.vercel.app/) |
+| **Treasury (mainnet, chain 677)** | [`0x706b24fD623074d055963E77398E6112396490b2`](https://scan.botchain.ai/address/0x706b24fD623074d055963E77398E6112396490b2) |
+| **Treasury (testnet, chain 968)** | [`0xfad9a3c0522bC933d6E284C446E75Dc9B45Bb079`](https://scan.bohr.life/address/0xfad9a3c0522bC933d6E284C446E75Dc9B45Bb079) |
 | **Demo video** | [https://youtu.be/aiZc_6dlNeU](https://youtu.be/aiZc_6dlNeU) |
 
 ---
 
-## 🚨 The Problem: Financial Privacy is Broken
+## What it does
 
-### Real-Life Story
+Share one static link (e.g. `amaan.privatepay.bot`). Each payment sends **BOT** or **USDT** on BOT Chain to the treasury. The recipient’s in-app balance is credited, then they withdraw to their own wallet. Observers see transfers to a shared contract, not a durable sender↔receiver pair.
 
-**Alice**, a legendary dev, won the ETHIndia Hackathon and received **$3,000** in prize money.
-
-**Bob**, another participant who also won at the same hackathon, had a co-founder who wasn't trustworthy — the co-founder refused to admit receiving any prize money. Bob messaged all **3 winners** asking for the organizer's wallet address. 1/3 winner shared it. On the explorer, that single address made it trivial to see who received what. Bob quickly inferred that **$9,000** had been split among three people and, in a couple of minutes and with basic intelligence tools like Arkham, Dune Analytics, etc. linked **every wallet to its owner**.
-
-**That's a serious concern.** Nobody wants the wallet that holds their real funds to be exposed. Bob — or anyone with the same info — could target those people for their own benefit.
-
-### The Core Issues
-
-❌ **Payments on public blockchains are NOT private**
-- Traceable through tools like Arkham Intelligence
-- Trackable via Dune Analytics and explorers
-- Identifiable by anyone with basic skills
-
-❌ **Results:**
-- Fear of transacting
-- Inconvenience for legitimate users
-- Financial loss from targeted attacks
-- Privacy violations for everyone
+- **Sender privacy** — the payee’s personal wallet is not the on-chain destination
+- **Receiver privacy** — funds land in treasury, then leave via the relayer
+- **Simple UX** — one payment link, unlimited incoming payments
+- **BOT Chain only** — wallets are forced onto chain 677 (or 968 in testnet mode)
 
 ---
 
-## ✅ The Solution: PrivatePay
+## Networks
 
-**Where every transaction is fully private, anonymous, unidentifiable, and untrackable.**
+Canonical config lives in [`src/botchain.js`](src/botchain.js). Switch with `VITE_BOTCHAIN_NETWORK=mainnet` or `testnet`.
 
-### Core Benefits (current implementation)
+| | Mainnet | Testnet |
+|---|---|---|
+| **Name** | BOT Chain | BOT Chain Testnet |
+| **Chain ID** | `677` | `968` |
+| **RPC** | `https://rpc.botchain.ai` | `https://rpc.bohr.life` |
+| **Explorer** | [scan.botchain.ai](https://scan.botchain.ai) | [scan.bohr.life](https://scan.bohr.life) |
+| **Native token** | BOT (18 decimals) | BOT (18 decimals) |
+| **USDT** | [`0xabab…7a3c`](https://scan.botchain.ai/token/0xababc7ddc03e501d190c676bf3d92ef0e6e87a3c) (6 decimals) | [`0x75ed…0fe3`](https://scan.bohr.life/token/0x75edC9335175Fc0552D51D48439F229c10420fe3) (6 decimals) |
+| **Treasury** | see `deployments/botchain-677.json` | see `deployments/botchain-968.json` |
 
-- ✨ **Sender privacy**: Your wallet is never linked to the transaction
-- ✨ **Receiver privacy**: Recipients' identities remain hidden
-- ✨ **Observer blindness**: Third parties see nothing linkable
-- ✨ **Simple UX**: Like Stripe links, but every transaction is a new, invisible wallet
+Hardhat networks: `botchain` and `botchainTestnet` in [`hardhat.config.cjs`](hardhat.config.cjs).
 
-### Key Features (current)
+---
 
-🔒 **Infinite Untraceable Stealth Accounts**
-- Each payment generates a fresh stealth sub-account
-- Unlimited transactions, unlimited mixers
-- One single DarkPool
-
-💼 **Static Payment Links**
-- Share a single payment link (e.g., `amaan.privatepay.base`)
-- Each access generates a unique stealth address
-- No complex setup required
-
-🔐 **Complete Unlinkability**
-- Sender cannot identify receiver
-- Receiver cannot identify sender
-- Observers see nothing linkable
-
-### Payment Link → Treasury Flow (Base)
+## Payment flow
 
 ```mermaid
 sequenceDiagram
   participant Sender
-  participant App as PrivatePay App
+  participant App as PrivatePay
   participant Wallet as EVM Wallet
-  participant Base as Base Sepolia
-  participant Supabase
+  participant Bot as BOT Chain
+  participant Neon as Neon Postgres
+  participant Relayer
   participant Recipient
 
-  Sender->>App: Pay via payment link (amount, recipient alias)
-  App->>Wallet: Sign transfer to treasury
-  Wallet->>Base: Send ETH/USDC
-  Base-->>Wallet: tx hash
-  App->>Supabase: recordPayment(sender, recipient, amount, txHash)
-  Supabase->>Supabase: Credit recipient balance
-  App-->>Recipient: Recipient sees credited balance in app
+  Sender->>App: Open payment link (alias, amount, BOT or USDT)
+  App->>Wallet: Require BOT Chain, sign transfer to treasury
+  Wallet->>Bot: Send BOT or USDT to PrivatePayTreasury
+  Bot-->>Wallet: tx hash
+  App->>Neon: recordPayment(sender, recipient, amount, txHash)
+  Neon->>Neon: Credit recipient balance
+  Recipient->>App: Withdraw
+  App->>Relayer: POST /api/withdraw
+  Relayer->>Bot: treasury.withdraw(to, amount)
+  Bot-->>Recipient: BOT/USDT in wallet
 ```
 
-Recipients can withdraw their credited balance to their wallet (Send & Withdraw on Base Sepolia). ENS Hub resolves `.eth` names (mainnet) and sends on Base; BitGo Shielded Hub for custody flows.
+Settlement is always on BOT Chain. Balances and payment links live in Neon (reached only through `POST /api/db`).
 
 ---
 
-## 🔧 Technology Stack
-
-### Privacy Infrastructure
-
-**Currently in use (Base, ENS, BitGo):** Treasury-based flow — sender → treasury on-chain (Base Sepolia); recipient balance and withdrawals via Supabase + relayer. ENS for identity resolution; BitGo for shielded addresses and custody.
-
-**Roadmap / in progress:**
-
-```
-🔐 Cryptographic Primitives (for future stealth flow)
-├─ Secp256k1 elliptic curve cryptography
-├─ SHA3-256 hashing for address derivation
-└─ Secure random number generation
-
-🤝 ECDH (Elliptic Curve Diffie-Hellman)
-├─ Shared secret computation
-├─ Key exchange protocol
-└─ Perfect forward secrecy
-
-🎭 Stealth Address Protocol (SSAP) — BIP 0352 / EIP 5564
-├─ Unique address per transaction (target)
-└─ Complete unlinkability
-
-🌊 DarkPool Mixer (In Progress)
-├─ Runtime Offchain Logic (ROFL) integration
-├─ Homomorphic encryption
-└─ Monero-style Ring Signatures & RingCT
-
-🔍 Automated Monitoring
-├─ Event-based transaction detection
-├─ Event-based backup system
-└─ Resilient recovery mechanism
-```
-
-### Built With
+## Stack
 
 ```mermaid
 flowchart LR
-  subgraph Frontend["Frontend"]
-    React["React + Vite"]
-  end
-  subgraph Chain["Chain & Custody"]
-    Base[Base Sepolia]
-    ENS[ENS]
-    BitGo[BitGo]
-  end
-  subgraph Data["Data"]
-    Supabase[Supabase]
-  end
-  subgraph Crypto["Cryptography"]
-    Noble["noble secp256k1"]
-  end
-
-  React --> Base
-  React --> Supabase
-  React --> Noble
-  React --> ENS
-  React --> BitGo
-```
-
-- **Blockchain**: Base (Base Sepolia) for payments; Ethereum mainnet for ENS resolution only
-- **Frontend**: React + Vite + ConnectKit / wagmi
-- **Database**: Supabase (PostgreSQL)
-- **Custody**: BitGo (multi-sig, shielded addresses)
-- **Cryptography**: @noble/secp256k1, @noble/hashes
-
-### Ecosystem alignment
-
-PrivatePay is built on and aligned with the following technologies and where they appear in the product:
-
-| Technology | Role in PrivatePay |
-|------------|--------------------|
-| **Base** | Primary chain for private payments: treasury contract, ETH/USDC transfers, Send & Withdraw. All on-chain settlement runs on Base Sepolia. |
-| **ENS (Ethereum Name Service)** | Identity layer: resolve `.eth` names on Ethereum mainnet; Send page ENS tab sends shielded ETH via ENS Treasury on Base. User ENS shown on dashboard. |
-| **BitGo** | Custody and shielded vault: generate fresh shielded addresses, multi-sig (2-of-3), programmatic disbursement. BitGo Shielded Hub in-app; API routes proxy through serverless. |
-| **Supabase** | Backend and state: user and wallet mapping, payment links, balances (ETH/USDC/BitGo), payment and withdrawal history, real-time balance updates. |
-| **Vercel** | Hosting and serverless: frontend deploy, `/api` routes (withdraw, BitGo generate/balance/send). Use `vercel dev` for full API in development. |
-| **ConnectKit / wagmi** | Wallet connection and EVM: Base Sepolia + Ethereum mainnet (ENS), chain switching, signer for treasury and ENS flows. |
-
-The codebase uses these consistently: `config.js` and `.env` for Base/ENS/BitGo/Supabase; `src/lib/supabase.js` for all ledger and user data; `src/lib/bitgo.js` and `api/bitgo-*.js` for BitGo; Send page tabs (Send, Withdraw, ENS) and BitGo page for the respective flows.
-
----
-
-## 📊 Market Opportunity
-
-### Total Addressable Market (TAM)
-
-| Market | Size | Growth |
-|--------|------|--------|
-| 💰 Global payment processing | $160B annually | - |
-| 🪙 Crypto payment market | $624M | 16.6% CAGR |
-| 🔒 Privacy-focused solutions | $1.2B | Growing |
-| 👥 Crypto users worldwide | 590M+ | Expanding |
-
-### Target Users
-
-- **Individuals**: Privacy-conscious crypto users
-- **Freelancers**: Receive payments without exposing income
-- **Businesses**: Accept payments without revealing revenue
-- **DAOs**: Anonymous treasury management
-- **Hedge Funds**: Private money movements
-- **High Net Worth**: Protection from targeted attacks
-
----
-
-## 🎯 Competitive Landscape
-
-### Why PrivatePay Wins
-<img width="712" height="182" alt="Screenshot 2026-01-16 at 11 42 10 AM" src="https://github.com/user-attachments/assets/521a7d66-118c-4c91-bae5-9c0783ea5e1d" />
-
----
-
-## ⚡ Future Roadmap
-
-### Phase 1: Core Platform ✅
-- ✅ Stealth address generation
-- ✅ Payment link system
-- ✅ Dashboard and monitoring
-
-### Phase 2: Enhanced Privacy 🚧
-- 🚧 Zero-knowledge proofs
-- 🚧 Bulletproofs for amount hiding
-- 🚧 Advanced DarkPool integration
-- 🚧 ROFL-style monitoring
-
-### Phase 3: Payment Expansion 🔮
-- 🔮 Private credit and debit card payments
-- 🔮 Disposable wallets
-
-### Phase 4: Enterprise Features 🔮
-- 🔮 Hedge fund money moves
-- 🔮 API marketplace
-- 🔮 White-label solutions
-- 🔮 Compliance tools
-
-### Endless Possibilities
-- No more "James Waynn Exposer" incidents
-- End to HyperLiquid wallet reveals
-- Protection for high-value transactions
-- Privacy for everyone, everywhere
-
----
-
-### Cryptographic Flow
-
-```mermaid
-flowchart LR
-  subgraph Meta["1. Meta Address"]
-    A1["spendPriv spendPub"] --> A2["viewingPriv viewingPub"]
-    A2 --> A3["metaAddress"]
-  end
-  subgraph Stealth["2. Stealth Address"]
-    B1["ephemeral keys"] --> B2["ECDH shared secret"]
-    B2 --> B3["tweak H shared"]
-    B3 --> B4["stealthPub"]
-    B4 --> B5["stealth address"]
-  end
-  subgraph Detect["3. Payment Detection"]
-    C1["ECDH derive"] --> C2["Derive stealth address"]
-    C2 --> C3["Scan chain"]
-  end
-  subgraph Withdraw["4. Withdrawal"]
-    D1["stealthPriv"] --> D2["Sign tx"]
-    D2 --> D3["Transfer to main wallet"]
-  end
-  Meta --> Stealth --> Detect --> Withdraw
-```
-
-**Steps (summary):**
-
-1. **Meta Address** — Generate spend key pair and viewing key pair; meta address = (spendPub, viewingPub).
-2. **Stealth Address** — Ephemeral key → ECDH shared secret → tweak → stealth public key → stealth address.
-3. **Payment Detection** — Recipient derives same stealth address via ECDH(viewingPriv, ephemeralPub), scans chain.
-4. **Fund Withdrawal** — stealthPriv = spendPriv + tweak; sign and transfer to main wallet.
-
----
-
-## 🧠 System Architecture Overview
-
-Below is a concise, technical view of how the PrivatePay system is wired (Base Sepolia, ENS, BitGo, Supabase).
-
-### Component Overview
-
-```mermaid
-flowchart TB
   subgraph Client["Client"]
-    UI[React / Vite App]
-    Wallet[EVM Wallet]
+    React["React + Vite"]
+    Wagmi["ConnectKit / wagmi"]
+  end
+  subgraph Chain["BOT Chain"]
+    Treasury["PrivatePayTreasury"]
+    USDT["USDT"]
+  end
+  subgraph Server["Server"]
+    API["/api/db · /api/withdraw"]
+    Neon[(Neon Postgres)]
   end
 
-  subgraph Chains["Chain & Custody"]
-    Base[Base Sepolia]
-    ENS[ENS]
-    BitGo[BitGo]
-  end
-
-  subgraph Data["Data"]
-    Supabase[(Supabase)]
-  end
-
-  UI <--> Wallet
-  Wallet --> Base
-  UI <--> Supabase
-  UI --> ENS
-  UI --> BitGo
+  React --> Wagmi
+  Wagmi --> Treasury
+  Wagmi --> USDT
+  React --> API
+  API --> Neon
+  API --> Treasury
 ```
 
-### High-Level Architecture
-
-```mermaid
-sequenceDiagram
-  participant User
-  participant UI as PrivatePay Web App
-  participant Wallet as Wallet Adapters
-  participant Chain as Base Sepolia
-  participant Supabase
-
-  User->>UI: Open PrivatePay
-  UI->>Supabase: Load user data, payment links, balances
-  Supabase-->>UI: User state, balances
-
-  User->>UI: Connect wallet
-  UI->>Wallet: Request connection
-  Wallet-->>UI: Account addresses, network
-
-  User->>UI: Initiate private payment
-  UI->>Wallet: Sign transaction
-  Wallet->>Chain: Broadcast transaction
-  Chain-->>Wallet: Transaction hash
-  Wallet-->>UI: Confirmation
-  UI->>Supabase: recordPayment(sender, recipient, amount, txHash)
-  Supabase-->>UI: Updated balances
-
-  UI-->>User: Show transaction status
-```
-
-At the center is the **React/Vite** app, which talks to your EVM wallet, Base Sepolia (and mainnet for ENS), BitGo, and Supabase.
-
-### Stealth Meta-Address Flow (target architecture)
-
-*This flow is the intended end-state for full on-chain privacy; the current app uses the treasury + ledger flow above.*
-
-```mermaid
-sequenceDiagram
-  participant Sender
-  participant Recipient
-  participant Chain
-
-  Note over Recipient: 1) Generate meta address (spendPub, viewingPub)
-
-  Sender->>Recipient: Ask for meta address
-  Sender->>Sender: Generate ephemeral key (ephemeralPriv, ephemeralPub)
-  Sender->>Sender: shared = ECDH(ephemeralPriv, viewingPub)
-  Sender->>Sender: tweak = H(shared || k)
-  Sender->>Sender: stealthPub = spendPub + tweak·G
-  Sender->>Chain: Pay to stealthAddress(stealthPub)
-
-  Recipient->>Recipient: shared' = ECDH(viewingPriv, ephemeralPub)
-  Recipient->>Recipient: Derive same tweak & stealthPub
-  Recipient->>Chain: Scan for funds at stealthAddress
-  Recipient->>Recipient: stealthPriv = spendPriv + tweak
-  Recipient->>Chain: Withdraw to main wallet
-```
-
-The app today uses the **Payment Link → Treasury Flow** (send to treasury, record in Supabase, withdraw from treasury). Wallet connection: `src/providers/ConnectKitProvider.jsx` — Base Sepolia + Ethereum mainnet (ENS) via wagmi/ConnectKit.
+| Piece | Role |
+|---|---|
+| **BOT Chain** | Only settlement network. Native BOT + USDT. |
+| **PrivatePayTreasury** | Holds deposits; relayer/owner withdraws. Also registers meta-addresses, stealth slots, and a DarkPool-style commitment pool. |
+| **Neon Postgres** | Users, payment links, balances, payments, points. No browser database client. |
+| **ConnectKit / wagmi** | Wallet connect; auto-switch to BOT Chain. |
+| **Vercel or Railway** | Host the SPA plus `/api/db` and `/api/withdraw`. Railway uses [`server.mjs`](server.mjs). |
 
 ---
 
-## 🚀 Getting Started (Developers)
+## Getting started
 
-### 1. Prerequisites
+### Prerequisites
 
-- **Node.js** ≥ 20.x (tested with Node 22.x)
-- **npm** ≥ 10.x
-- Browser wallet: **EVM wallet** (ConnectKit) on Base Sepolia
+- Node.js ≥ 20
+- An EVM wallet funded with BOT (and USDT if you want token payments)
+- A Neon project ([console.neon.tech](https://console.neon.tech))
 
-### 2. Install Dependencies
+### Install
 
 ```bash
-cd Private-Pay
 npm install
-```
-
-### 3. Environment Variables (root `.env`)
-
-Copy `.env.example` to `.env` and fill in your values:
-
-```bash
 cp .env.example .env
 ```
 
+### Environment
+
 | Variable | Description |
-|----------|-------------|
-| **Supabase** | |
-| `VITE_SUPABASE_URL` | Supabase project URL (Settings → API) |
-| `VITE_SUPABASE_ANON_KEY` | Supabase anonymous key (public, safe for frontend) |
-| **Base** | |
-| `VITE_BASE_CHAIN_ID` | Base Sepolia chain ID (`84532`) |
-| `VITE_BASE_RPC_URL` | Base Sepolia RPC (e.g. `https://sepolia.base.org`) |
-| `VITE_BASE_MAINNET_RPC_URL` | Base mainnet RPC (optional) |
-| `VITE_BASE_ASSET_SYMBOL` | Base asset symbol (e.g. `USDC`) |
-| `VITE_BASE_ASSET_ADDRESS` | USDC contract address on Base Sepolia (optional) |
-| `VITE_BASE_ASSET_DECIMALS` | USDC decimals (e.g. `6`) |
-| **Ethereum (ENS)** | |
-| `VITE_ETH_MAINNET_RPC_URL` | Ethereum mainnet RPC (for ENS resolution) |
-| `VITE_ETH_SEPOLIA_RPC_URL` | Ethereum Sepolia RPC (optional) |
-| `VITE_ENS_CHAIN` | ENS chain (e.g. `mainnet`) |
-| **Treasury** | |
-| `VITE_SHARED_TREASURY_ADDRESS` | Shared treasury (Base/ENS/BitGo) |
-| `VITE_BASE_TREASURY_ADDRESS` | Base treasury (or same as shared) |
-| `VITE_ENS_TREASURY_ADDRESS` | ENS treasury (or same as shared) |
-| `VITE_BITGO_TREASURY_ADDRESS` | BitGo treasury (or same as shared) |
-| **BitGo** | |
-| `VITE_BITGO_API_URL` | BitGo API base (e.g. `https://app.bitgo-test.com/api/v2`) |
-| `VITE_BITGO_ACCESS_TOKEN` | BitGo API access token |
-| `VITE_BITGO_WALLET_ID` | BitGo wallet ID |
-| `VITE_BITGO_COIN` | BitGo coin (e.g. `tbaseeth`) |
-| `VITE_BITGO_ENV` | BitGo environment (e.g. `test`) |
-| `VITE_BITGO_ASSET_SYMBOL` | Display symbol (e.g. `tBaseETH`) |
-| **Secrets (do not commit)** | |
-| `VITE_TREASURY_PRIVATE_KEY` | Relayer/withdraw key — **keep secret** |
-| `TREASURY_PRIVATE_KEY` | Same key for backend/API — **keep secret** |
+|---|---|
+| `DATABASE_URL` | Neon pooled connection string |
+| `DIRECT_URL` | Neon direct URL (migrations only) |
+| `VITE_BOTCHAIN_NETWORK` | `mainnet` (default) or `testnet` |
+| `VITE_SHARED_TREASURY_ADDRESS` | Deployed `PrivatePayTreasury` |
+| `VITE_BASE_TREASURY_ADDRESS` | Same address (legacy env name) |
+| `DEPLOYER_PRIVATE_KEY` | Funded BOT Chain key for `npm run contract:deploy` |
+| `RELAYER_ADDRESS` | Address allowed to call `withdraw` (defaults to deployer) |
+| `TREASURY_PRIVATE_KEY` | Relayer key for `/api/withdraw` — **server only, never commit** |
+| `VITE_BACKEND_URL` | Optional. Point the SPA at a separate API (e.g. `http://localhost:3400`) |
 
-See [.env.example](.env.example) for the full template.
+Optional RPC/USDT overrides: `VITE_BOTCHAIN_CHAIN_ID`, `VITE_BOTCHAIN_RPC_URL`, `VITE_BOTCHAIN_EXPLORER`, `VITE_BOTCHAIN_USDT_ADDRESS`. Defaults are in `src/botchain.js`.
 
-### 4. Run
+### Run
 
 ```bash
-npm run dev   # http://localhost:5173
+npm run dev          # Vite — http://localhost:5173
+npm run dev:all      # Vite + backend together
+npm run db:check     # Confirm Neon is reachable
 ```
 
-**BitGo and API routes:** The `/api/*` routes (BitGo generate address, balance, send) are Vercel serverless functions. They are **not** served by `npm run dev` (Vite only serves the frontend), so the BitGo page will show "API route not found" unless you either:
-
-- Run **`vercel dev`** so both the app and API run together, or  
-- Run a separate API server and set **`VITE_BACKEND_URL`** in `.env` to that server (e.g. `http://localhost:3000`).
-
-**If Supabase fails after running `vercel dev`** (`net::ERR_NAME_NOT_RESOLVED`, "Error creating payment link"): `vercel dev` injects env from your **Vercel project** (Development). If the linked project has no or wrong `VITE_SUPABASE_URL` / `VITE_SUPABASE_ANON_KEY`, they override your local `.env` and the app can’t reach Supabase. Fix it by either:
-
-- Using **`npm run dev`** for day-to-day local work (payment links, dashboard, Send/Withdraw) so Vite uses your local `.env`, or  
-- Adding the same Supabase (and other) vars to the Vercel project: **Project → Settings → Environment Variables**, add `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` for **Development**, then run `vercel dev` again.
+`/api/db` and `/api/withdraw` are not served by Vite. Use `vercel dev`, `npm run dev:all`, or set `VITE_BACKEND_URL`. Production on Railway: `npm run build && npm start`.
 
 ---
 
-## 🧩 Project Structure (Key Folders)
+## Contracts
+
+[`contracts/PrivatePayTreasury.sol`](contracts/PrivatePayTreasury.sol) — treasury, meta-address registry, stealth deposits, DarkPool commitments.
+
+```bash
+npm run contract:compile
+BOTCHAIN_NETWORK=testnet npm run contract:deploy   # chain 968
+BOTCHAIN_NETWORK=mainnet npm run contract:deploy   # chain 677
+```
+
+Writes `deployments/botchain-<chainId>.json`. Copy `privatePayTreasury` into `VITE_SHARED_TREASURY_ADDRESS`.
+
+```bash
+BOTCHAIN_NETWORK=testnet npm run contract:e2e
+BOTCHAIN_NETWORK=testnet npm run contract:e2e:usdt
+```
+
+| Function | Who | What |
+|---|---|---|
+| `receive()` | Anyone | Accept native BOT |
+| `withdraw(to, amount)` | Relayer / owner | Pay out BOT |
+| `setMetaAddress` / `getMetaAddress` | Relayer / anyone | BIP 0352–style meta address |
+| `depositToStealth` / `withdrawStealth` | Anyone / relayer | Stealth slot by `(recipientId, ephemeralPub)` |
+| `depositToPool` / `withdrawFromPoolWithApproval` | Anyone | Commitment pool + relayer-signed nullifier |
+
+---
+
+## Project structure
 
 ```text
 src/
-  components/
-    home/                # Dashboard cards, balance chart, payment links list
-    shared/              # Navbar, MobileNav, icons, dialogs
-    payment/             # Payment flow (pay via link)
-    payment-links/      # Payment link list & entry
-    alias/               # Alias detail, TxItem, AssetItem
-    transactions/        # Transaction list (by wallet)
-    dialogs/             # CreateLink, Qr, GetStarted, Onramp, etc.
-
+  botchain.js            # Chain id, RPC, explorer, USDT
+  config.js              # Treasury, display chains, payment-link suffix
   pages/
-    IndexPage.jsx        # Landing / dashboard
-    SendPage.jsx         # Send & withdraw (Base)
-    EnsPage.jsx          # ENS Hub (resolve .eth, send on Base)
-    BitGoPage.jsx        # BitGo Shielded Hub
-    PaymentPage.jsx      # Pay via link (e.g. /pay/alias)
-    PaymentLinksPage.jsx # Payment links listing
-    TransactionsPage.jsx # Transaction history
-    AliasDetailPage.jsx  # Alias balance & activity
-    BasePage.jsx         # Base hub entry
-    MainBalancePage.jsx  # Balance view
-    (PointsPage.jsx)     # Points — feature disabled in-app
+    IndexPage.jsx        # Dashboard
+    SendPage.jsx         # Send & withdraw on BOT Chain
+    BasePage.jsx         # BOT Chain hub
+    PaymentPage.jsx      # Pay via /payment/:alias
+    PaymentLinksPage.jsx
+    TransactionsPage.jsx
+  lib/supabase.js        # Neon client (name kept; calls POST /api/db)
+  providers/ConnectKitProvider.jsx   # wagmi, BOT Chain only
+  hooks/useAppWallet.js  # Connect + force-switch to BOT Chain
 
-  layouts/
-    RootLayout.jsx       # Root shell + outlet
-    AuthLayout.jsx       # Auth-gated layout
-    PaymentLayout.jsx    # Payment flow layout
-    PlainLayout.jsx      # Minimal layout
+api/
+  db.js                  # Neon action allow-list
+  withdraw.js            # Relayer withdraw
 
-  providers/
-    RootProvider.jsx     # Composes all context providers
-    ConnectKitProvider.jsx  # EVM wallet (Base + mainnet for ENS)
-    UserProvider.jsx
-    ChainProvider.jsx
-
-  lib/
-    supabase.js          # Payment links, balances, payments, withdrawals
-    bitgo.js             # BitGo API (addresses, send)
-    ethers.js            # Ethers helpers
-  config.js              # Chains, treasury addresses, logos (src root)
-
-  hooks/                 # useAppWallet, useEnsProfile, useActivityLog, etc.
-  store/                 # Jotai: dialog-store, payment-card-store, balance-store
-  utils/                 # style, formatting, pwa-utils, etc.
-
-contracts/
-  PrivatePayTreasury.sol # Treasury on Base Sepolia (Base, ENS, BitGo)
-  README.md              # Contract deployment notes
+contracts/PrivatePayTreasury.sol
+scripts/deploy-treasury.cjs
+deployments/botchain-677.json
+deployments/botchain-968.json
+server.mjs               # Railway: SPA + /api/*
 ```
 
 ---
 
-## 🧪 Testing
+## Testing
 
-- **Frontend**
-
-  ```bash
-  npm run test
-  npm run test:e2e
-  ```
-
-See `docs/guides/` for setup and deployment.
+```bash
+npm run test
+```
