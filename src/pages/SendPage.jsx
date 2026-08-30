@@ -76,7 +76,7 @@ export default function SendPage() {
 }
 
 function SendTab() {
-  const { account, isConnected, connect, signer } = useAppWallet();
+  const { account, isConnected, connect, signer, ensureBotChain } = useAppWallet();
   const [recipient, setRecipient] = useState('');
   const [amount, setAmount] = useState('0.1');
   const [currency, setCurrency] = useState('BOT'); // 'BOT' or 'USDT'
@@ -164,6 +164,9 @@ function SendTab() {
 
     try {
       setTransferLoading(true);
+      // The value below is native BOT or BOT Chain USDT. Signing it while the
+      // wallet sits on another network would send it there instead.
+      await ensureBotChain();
       toast.loading('Submitting transaction...', { id: 'tx-loading' });
 
       let tx;

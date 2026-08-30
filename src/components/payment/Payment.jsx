@@ -18,7 +18,7 @@ import SuccessDialog from "../dialogs/SuccessDialog.jsx";
 export default function Payment() {
   const loaderData = useLoaderData();
   const { alias_url } = useParams();
-  const { account, isConnected, connect, signer, provider } = useAppWallet();
+  const { account, isConnected, connect, signer, provider, ensureBotChain } = useAppWallet();
 
 
   const alias = loaderData ? loaderData.subdomain : alias_url;
@@ -94,6 +94,9 @@ export default function Payment() {
     try {
       const treasuryAddress = BASE_TREASURY_ADDRESS;
       if (!treasuryAddress) throw new Error("Treasury address not configured");
+
+      // Same reason as SendPage: never sign a transfer on the wrong chain.
+      await ensureBotChain();
 
       let tx;
       if (currency === 'BOT') {
