@@ -68,6 +68,16 @@ export function useAppWallet() {
     return null;
   }, [walletClient, address]);
 
+  // Move the wallet onto BOT Chain as soon as it connects, so balances and the
+  // network shown in the wallet match the app straight away. The hard guard in
+  // ensureBotChain still runs before any transfer, in case this is declined.
+  useEffect(() => {
+    if (!isConnected || chainId === botChain.id || !switchChainAsync) return;
+    switchChainAsync({ chainId: botChain.id }).catch((err) => {
+      console.warn("[useAppWallet] wallet stayed on chain", chainId, err?.message);
+    });
+  }, [isConnected, chainId, switchChainAsync]);
+
   // Close ConnectKit modal when already connected (avoids stuck WalletConnect QR / 403)
   useEffect(() => {
     if (isConnected) setOpen(false);
