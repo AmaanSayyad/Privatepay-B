@@ -3,8 +3,8 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
-  "repository": "https://github.com/AmaanSayyad/Private-Pay-",
-  "homepage": "https://private-pay-iqgp.vercel.app",
+  "repository": "https://github.com/AmaanSayyad/Privatepay-B",
+  "homepage": "https://privatepay-production.up.railway.app",
   "overrides": {
     "readable-stream": "^3.6.2"
   },

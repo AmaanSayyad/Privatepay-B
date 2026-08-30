@@ -4,9 +4,9 @@ Untraceable private payments on **BOT Chain** only. Stealth payment links, a sha
 
 | | Link |
 |---|------|
-| **Pitch deck** | [Private-Pay (Google Slides)](https://docs.google.com/presentation/d/1i_ZRVzjbjkXesqM678vyouuYk2o7o2z_gGqPZtqmkkE/edit?usp=sharing) |
-| **GitHub** | [AmaanSayyad/Private-Pay-](https://github.com/AmaanSayyad/Private-Pay-) |
-| **Live app** | [https://private-pay-iqgp.vercel.app/](https://private-pay-iqgp.vercel.app/) |
+| **Pitch deck** | [Private-Pay — Botchain (Google Slides)](https://docs.google.com/presentation/d/1-m43OKlqB9R0MvISJZj7Ngs4UpEafBMJJkeybu08bxg/edit?usp=sharing) |
+| **GitHub** | [AmaanSayyad/Privatepay-B](https://github.com/AmaanSayyad/Privatepay-B) |
+| **Live app** | [https://privatepay-production.up.railway.app/](https://privatepay-production.up.railway.app/) |
 | **Treasury (mainnet, chain 677)** | [`0x706b24fD623074d055963E77398E6112396490b2`](https://scan.botchain.ai/address/0x706b24fD623074d055963E77398E6112396490b2) |
 | **Treasury (testnet, chain 968)** | [`0xfad9a3c0522bC933d6E284C446E75Dc9B45Bb079`](https://scan.bohr.life/address/0xfad9a3c0522bC933d6E284C446E75Dc9B45Bb079) |
 | **Demo video** | [https://youtu.be/aiZc_6dlNeU](https://youtu.be/aiZc_6dlNeU) |

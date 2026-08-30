@@ -174,4 +174,4 @@ commit "feat(api): add withdraw and BitGo serverless routes" api/withdraw.js api
 commit "docs: add Supabase schema and migrations; BitGo and dev scripts; README" docs/supabase/schema.sql docs/supabase/base_sepolia_schema.sql docs/supabase/points-system.sql docs/supabase/fix-payment_links-username.sql docs/supabase/fix-varchar-length.sql docs/supabase/fix_permissions.sql docs/supabase/bitgo_integration.sql docs/supabase/ens_integration.sql docs/supabase/update_balances_v2.sql scripts/bitgo-check.js scripts/bitgo-list-wallets.js scripts/bitgo-test-address.js scripts/bitgo-verify-token.js scripts/check_imports.mjs scripts/import_test.mjs scripts/test-paymaster.js scripts/push-50-commits.sh scripts/push-52-commits.sh scripts/push-commits.sh README.md build.txt
 
 echo "Done. Total commits: $(git rev-list --count HEAD 2>/dev/null || echo 0)"
-echo "Push with: git remote add origin https://github.com/AmaanSayyad/Private-Pay-.git 2>/dev/null; git push -u origin main"
+echo "Push with: git remote add origin https://github.com/AmaanSayyad/Privatepay-B.git 2>/dev/null; git push -u origin main"

@@ -52,7 +52,7 @@ export const router = createBrowserRouter([
     element: <AuthLayout />,
     loader: () => {
       const host = window.location.hostname;
-      const websiteHost = import.meta.env.VITE_WEBSITE_HOST || "private-pay-iqgp.vercel.app";
+      const websiteHost = import.meta.env.VITE_WEBSITE_HOST || "privatepay-production.up.railway.app";
       const suffix = `.${websiteHost}`;
       if (host.endsWith(suffix)) {
         const subdomain = host.slice(0, -suffix.length);
